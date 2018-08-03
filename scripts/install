@@ -31,7 +31,7 @@ app=$YNH_APP_INSTANCE_NAME
 #=================================================
 
 # Check destination directory
-final_path="/var/www/$app"
+final_path="/opt/yunohost/$app"
 test ! -e "$final_path" || ynh_die "This path already contains a folder"
 
 # Normalize the url path syntax

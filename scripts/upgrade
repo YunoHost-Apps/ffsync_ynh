@@ -43,7 +43,7 @@ fi
 
 # If final_path doesn't exist, create it
 if [ -z "$final_path" ]; then
-	final_path=/var/www/$app
+	final_path=/opt/yunohost/$app
 	ynh_app_setting_set "$app" final_path "$final_path"
 fi
 
@@ -55,7 +55,7 @@ if [ -z "$path_url" ]; then
 fi
 
 # Detect old installation style
-if [ -e /opt/yunohost/ffsync ]; then
+if [ -e /etc/init.d/ffsync ]; then
 	service ffsync stop
 	update-rc.d -f ffsync remove
 
