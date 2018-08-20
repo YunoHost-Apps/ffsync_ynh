@@ -34,8 +34,6 @@ path_url=$(ynh_normalize_url_path "$path_url")
 # STORE SETTINGS FROM MANIFEST
 #=================================================
 
-ynh_app_setting_set "$app" domain "$domain"
-ynh_app_setting_set "$app" path "$path_url"
 ynh_app_setting_set "$app" final_path "$final_path"
 
 #=================================================
