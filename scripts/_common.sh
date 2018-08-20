@@ -54,7 +54,7 @@ ynh_add_uwsgi_service () {
 	fi
 	ynh_store_file_checksum "$finaluwsgiini"
 
-	chown root: "$finaluwsgiini"
+	chown $app "$finaluwsgiini"
 
 	systemctl daemon-reload
 	systemctl enable "uwsgi-app@$app.service"
