@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html class="linux x86 js x64 loaded" dir="ltr" data-latest-firefox="50.0.2" data-esr-versions="45.5.1" data-gtm-container-id="GTM-MW3R8V" lang="fr"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+    <script type="text/javascript" src="sync_files/site-bundle.js" charset="utf-8"></script>
+
+
+<!--
+             _.-~-.
+           7''  Q..\
+        _7         (_
+      _7  _/    _q.  /
+    _7 . ___  /VVvv-'_                                            .
+   7/ / /~- \_\\      '-._     .-'                      /       //
+  ./ ( /-~-/||'=.__  '::. '-~'' {             ___   /  //     ./{
+ V   V-~-~| ||   __''_   ':::.   ''~-~.___.-'' _/  // / {_   /  {  /
+  VV/-~-~-|/ \ .'__'. '.    '::                     _ _ _        ''.
+  / /~~~~||VVV/ /  \ )  \        _ __ ___   ___ ___(_) | | __ _   .::'
+ / (~-~-~\\.-' /    \'   \::::. | '_ ` _ \ / _ \_  / | | |/ _` | :::'
+/..\    /..\__/      '     '::: | | | | | | (_) / /| | | | (_| | ::'
+vVVv    vVVv                 ': |_| |_| |_|\___/___|_|_|_|\__,_| ''
+
+Hi there, nice to meet you!
+
+Interested in having a direct impact on hundreds of millions of users? Join
+Mozilla, and become part of a global community that’s helping to build a
+brighter future for the Web.
+
+Visit https://careers.mozilla.org to learn about our current job openings.
+Visit https://www.mozilla.org/contribute for more ways to get involved and
+help support Mozilla.
+-->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <title>Firefox Sync Server — Keep Synced on your own</title>
+    <meta name="description" content="">
+    <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="https://www.mozilla.org/media/img/firefox/ios-icon-180.7a8401f21915.png">
+    <link rel="icon" type="image/png" sizes="196x196" href="https://www.mozilla.org/media/img/firefox/favicon-196.223e1bcaf067.png">
+    <link rel="shortcut icon" href="https://www.mozilla.org/media/img/firefox/favicon.dc6635050bf5.ico">
+        <link rel="canonical" hreflang="fr" href="https://www.mozilla.org/fr/firefox/sync/">
+    <link rel="alternate" hreflang="x-default" href="https://www.mozilla.org/firefox/sync/">
+    <link rel="alternate" hreflang="af" href="https://www.mozilla.org/af/firefox/sync/" title="Afrikaans">
+    <link rel="alternate" hreflang="an" href="https://www.mozilla.org/an/firefox/sync/" title="aragonés">
+    <link rel="alternate" hreflang="ar" href="https://www.mozilla.org/ar/firefox/sync/" title="عربي">
+    <link rel="alternate" hreflang="as" href="https://www.mozilla.org/as/firefox/sync/" title="অসমীয়া">
+    <link rel="alternate" hreflang="ast" href="https://www.mozilla.org/ast/firefox/sync/" title="Asturianu">
+    <link rel="alternate" hreflang="az" href="https://www.mozilla.org/az/firefox/sync/" title="Azərbaycanca">
+    <link rel="alternate" hreflang="bg" href="https://www.mozilla.org/bg/firefox/sync/" title="Български">
+    <link rel="alternate" hreflang="bn-BD" href="https://www.mozilla.org/bn-BD/firefox/sync/" title="বাংলা (বাংলাদেশ)">
+    <link rel="alternate" hreflang="bn-IN" href="https://www.mozilla.org/bn-IN/firefox/sync/" title="বাংলা (ভারত)">
+    <link rel="alternate" hreflang="br" href="https://www.mozilla.org/br/firefox/sync/" title="Brezhoneg">
+    <link rel="alternate" hreflang="ca" href="https://www.mozilla.org/ca/firefox/sync/" title="Català">
+    <link rel="alternate" hreflang="cak" href="https://www.mozilla.org/cak/firefox/sync/" title="Maya Kaqchikel">
+    <link rel="alternate" hreflang="cs" href="https://www.mozilla.org/cs/firefox/sync/" title="Čeština">
+    <link rel="alternate" hreflang="cy" href="https://www.mozilla.org/cy/firefox/sync/" title="Cymraeg">
+    <link rel="alternate" hreflang="da" href="https://www.mozilla.org/da/firefox/sync/" title="Dansk">
+    <link rel="alternate" hreflang="de" href="https://www.mozilla.org/de/firefox/sync/" title="Deutsch">
+    <link rel="alternate" hreflang="dsb" href="https://www.mozilla.org/dsb/firefox/sync/" title="Dolnoserbšćina">
+    <link rel="alternate" hreflang="el" href="https://www.mozilla.org/el/firefox/sync/" title="Ελληνικά">
+    <link rel="alternate" hreflang="en-GB" href="https://www.mozilla.org/en-GB/firefox/sync/" title="English (British)">
+    <link rel="alternate" hreflang="en" href="https://www.mozilla.org/en-US/firefox/sync/" title="English">
+    <link rel="alternate" hreflang="en-CA" href="https://www.mozilla.org/en-US/firefox/sync/" title="English (Canada)">
+    <link rel="alternate" hreflang="eo" href="https://www.mozilla.org/eo/firefox/sync/" title="Esperanto">
+    <link rel="alternate" hreflang="es-AR" href="https://www.mozilla.org/es-AR/firefox/sync/" title="Español (de Argentina)">
+    <link rel="alternate" hreflang="es-CL" href="https://www.mozilla.org/es-CL/firefox/sync/" title="Español (de Chile)">
+    <link rel="alternate" hreflang="es-ES" href="https://www.mozilla.org/es-ES/firefox/sync/" title="Español (de España)">
+    <link rel="alternate" hreflang="es-MX" href="https://www.mozilla.org/es-MX/firefox/sync/" title="Español (de México)">
+    <link rel="alternate" hreflang="et" href="https://www.mozilla.org/et/firefox/sync/" title="Eesti keel">
+    <link rel="alternate" hreflang="eu" href="https://www.mozilla.org/eu/firefox/sync/" title="Euskara">
+    <link rel="alternate" hreflang="fa" href="https://www.mozilla.org/fa/firefox/sync/" title="فارسی">
+    <link rel="alternate" hreflang="fi" href="https://www.mozilla.org/fi/firefox/sync/" title="suomi">
+    <link rel="alternate" hreflang="fr" href="https://www.mozilla.org/fr/firefox/sync/" title="Français">
+    <link rel="alternate" hreflang="fy-NL" href="https://www.mozilla.org/fy-NL/firefox/sync/" title="Frysk">
+    <link rel="alternate" hreflang="ga-IE" href="https://www.mozilla.org/ga-IE/firefox/sync/" title="Gaeilge">
+    <link rel="alternate" hreflang="gd" href="https://www.mozilla.org/gd/firefox/sync/" title="Gàidhlig">
+    <link rel="alternate" hreflang="gl" href="https://www.mozilla.org/gl/firefox/sync/" title="Galego">
+    <link rel="alternate" hreflang="gn" href="https://www.mozilla.org/gn/firefox/sync/" title="Avañe'ẽ">
+    <link rel="alternate" hreflang="gu-IN" href="https://www.mozilla.org/gu-IN/firefox/sync/" title="ગુજરાતી (ભારત)">
+    <link rel="alternate" hreflang="hi-IN" href="https://www.mozilla.org/hi-IN/firefox/sync/" title="हिन्दी (भारत)">
+    <link rel="alternate" hreflang="hr" href="https://www.mozilla.org/hr/firefox/sync/" title="Hrvatski">
+    <link rel="alternate" hreflang="hsb" href="https://www.mozilla.org/hsb/firefox/sync/" title="Hornjoserbsce">
+    <link rel="alternate" hreflang="hu" href="https://www.mozilla.org/hu/firefox/sync/" title="magyar">
+    <link rel="alternate" hreflang="hy-AM" href="https://www.mozilla.org/hy-AM/firefox/sync/" title="Հայերեն">
+    <link rel="alternate" hreflang="id" href="https://www.mozilla.org/id/firefox/sync/" title="Bahasa Indonesia">
+    <link rel="alternate" hreflang="is" href="https://www.mozilla.org/is/firefox/sync/" title="íslenska">
+    <link rel="alternate" hreflang="it" href="https://www.mozilla.org/it/firefox/sync/" title="Italiano">
+    <link rel="alternate" hreflang="ja" href="https://www.mozilla.org/ja/firefox/sync/" title="日本語">
+    <link rel="alternate" hreflang="ka" href="https://www.mozilla.org/ka/firefox/sync/" title="ქართული">
+    <link rel="alternate" hreflang="kab" href="https://www.mozilla.org/kab/firefox/sync/" title="Taqbaylit">
+    <link rel="alternate" hreflang="kk" href="https://www.mozilla.org/kk/firefox/sync/" title="Қазақ">
+    <link rel="alternate" hreflang="kn" href="https://www.mozilla.org/kn/firefox/sync/" title="ಕನ್ನಡ">
+    <link rel="alternate" hreflang="ko" href="https://www.mozilla.org/ko/firefox/sync/" title="한국어">
+    <link rel="alternate" hreflang="lij" href="https://www.mozilla.org/lij/firefox/sync/" title="Ligure">
+    <link rel="alternate" hreflang="lt" href="https://www.mozilla.org/lt/firefox/sync/" title="lietuvių kalba">
+    <link rel="alternate" hreflang="lv" href="https://www.mozilla.org/lv/firefox/sync/" title="Latviešu">
+    <link rel="alternate" hreflang="mk" href="https://www.mozilla.org/mk/firefox/sync/" title="Македонски">
+    <link rel="alternate" hreflang="ms" href="https://www.mozilla.org/ms/firefox/sync/" title="Melayu">
+    <link rel="alternate" hreflang="my" href="https://www.mozilla.org/my/firefox/sync/" title="မြန်မာဘာသာ">
+    <link rel="alternate" hreflang="nb-NO" href="https://www.mozilla.org/nb-NO/firefox/sync/" title="Norsk bokmål">
+    <link rel="alternate" hreflang="nl" href="https://www.mozilla.org/nl/firefox/sync/" title="Nederlands">
+    <link rel="alternate" hreflang="nn-NO" href="https://www.mozilla.org/nn-NO/firefox/sync/" title="Norsk nynorsk">
+    <link rel="alternate" hreflang="oc" href="https://www.mozilla.org/oc/firefox/sync/" title="occitan (lengadocian)">
+    <link rel="alternate" hreflang="pa-IN" href="https://www.mozilla.org/pa-IN/firefox/sync/" title="ਪੰਜਾਬੀ (ਭਾਰਤ)">
+    <link rel="alternate" hreflang="pl" href="https://www.mozilla.org/pl/firefox/sync/" title="Polski">
+    <link rel="alternate" hreflang="pt-BR" href="https://www.mozilla.org/pt-BR/firefox/sync/" title="Português (do&nbsp;Brasil)">
+    <link rel="alternate" hreflang="pt-PT" href="https://www.mozilla.org/pt-PT/firefox/sync/" title="Português (Europeu)">
+    <link rel="alternate" hreflang="rm" href="https://www.mozilla.org/rm/firefox/sync/" title="rumantsch">
+    <link rel="alternate" hreflang="ro" href="https://www.mozilla.org/ro/firefox/sync/" title="Română">
+    <link rel="alternate" hreflang="ru" href="https://www.mozilla.org/ru/firefox/sync/" title="Русский">
+    <link rel="alternate" hreflang="sk" href="https://www.mozilla.org/sk/firefox/sync/" title="slovenčina">
+    <link rel="alternate" hreflang="sl" href="https://www.mozilla.org/sl/firefox/sync/" title="Slovenščina">
+    <link rel="alternate" hreflang="son" href="https://www.mozilla.org/son/firefox/sync/" title="Soŋay">
+    <link rel="alternate" hreflang="sq" href="https://www.mozilla.org/sq/firefox/sync/" title="Shqip">
+    <link rel="alternate" hreflang="sr" href="https://www.mozilla.org/sr/firefox/sync/" title="Српски">
+    <link rel="alternate" hreflang="sv-SE" href="https://www.mozilla.org/sv-SE/firefox/sync/" title="Svenska">
+    <link rel="alternate" hreflang="te" href="https://www.mozilla.org/te/firefox/sync/" title="తెలుగు">
+    <link rel="alternate" hreflang="tr" href="https://www.mozilla.org/tr/firefox/sync/" title="Türkçe">
+    <link rel="alternate" hreflang="uk" href="https://www.mozilla.org/uk/firefox/sync/" title="Українська">
+    <link rel="alternate" hreflang="uz" href="https://www.mozilla.org/uz/firefox/sync/" title="Oʻzbek tili">
+    <link rel="alternate" hreflang="vi" href="https://www.mozilla.org/vi/firefox/sync/" title="Tiếng Việt">
+    <link rel="alternate" hreflang="xh" href="https://www.mozilla.org/xh/firefox/sync/" title="isiXhosa">
+    <link rel="alternate" hreflang="zh-CN" href="https://www.mozilla.org/zh-CN/firefox/sync/" title="中文 (简体)">
+    <link rel="alternate" hreflang="zh-TW" href="https://www.mozilla.org/zh-TW/firefox/sync/" title="正體中文 (繁體)">
+
+
+    <!--[if lte IE 8]>
+
+      <script src="/media/js/libs/html5shiv.d580a4cd1cb4.js"></script>
+
+
+      <link href="/media/css/oldIE-bundle.62b3bbbe4890.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+
+    <!--[if !lte IE 8]><!-->
+
+
+      <link href="sync_files/responsive-bundle.css" rel="stylesheet" type="text/css">
+
+
+
+
+  <link href="sync_files/firefox_sync-bundle.css" rel="stylesheet" type="text/css">
+  <link href="sync_files/firefox_sync_anim-bundle.css" rel="stylesheet" type="text/css">
+
+    <!--<![endif]-->
+
+  <script type="text/javascript" src="sync_files/gtm-snippet-bundle.js" charset="utf-8"></script>
+
+<!-- End Google Tag Manager -->
+
+  <style type="text/css"></style></head>
+
+  <body id="firefox-sync" class="html-ltr sky state-fx-31-signed-in">
+    <div id="strings" data-global-close="Close" data-global-next="Next" data-global-previous="Previous" data-global-update-firefox="Update Firefox"></div>
+    <div id="outer-wrapper" style='background:url("${public_url}/media/img/sandstone/bg-gradient-sky.7ea325995978.png") repeat-x,url("${public_url}/media/img/sandstone/grain.855f29e0c686.png") repeat,#eee;'>
+
+
+
+
+
+
+<div class="sticky-wrapper" style=""><header id="fxfamilynav-header" class="fxfamilynav-header dark">
+  <div class="container">
+    <a href="https://www.mozilla.org/fr/firefox/products/" class="fxfamilynav-logo" style="background-image:url('${public_url}/media/img/firefox/family/nav-sprite.56fbf5a8d218.png') !important;">Firefox</a>
+    <nav id="fxfamilynav" class="fxfamilynav" role="navigation">
+      <ul id="fxfamilynav-primary" class="primary-nav">
+        <li class="related active">
+          <a data-id="features" href="https://www.mozilla.org/fr/firefox/features/" class="primary-link" data-link-type="nav" data-link-name="Features"><div>Self-Hosted Synchronisation Server</div></a>
+        </li>
+      <li class="">
+          <a data-id="features" style="width:300px;max-width:350px;" href="#howto" class="primary-link" data-link-type="nav" data-link-name="Features"><div>Running Mozilla’s Sync-1.5 Server</div></a>
+      </li>
+      </ul>
+    </nav><div id="fxfamilynav-adjunctnav" class="fxfamilynav-adjunctnav">
+
+      <div class="triangle"></div>
+      <div class="triangle-border"></div>
+
+      <ul class="adjunctnav">
+        <li><a href="https://www.mozilla.org/fr/firefox/channel/desktop/" data-link-type="nav" data-link-name="Side Menu: Pre-release downloads">Télécharger une préversion</a>
+        </li><li><a href="https://www.mozilla.org/fr/firefox/dnt/" data-link-type="nav" data-link-name="Side Menu: Do Not Track">Ne pas me pister</a></li>
+        <li><a href="https://www.mozilla.org/fr/firefox/interest-dashboard/" data-link-type="nav" data-link-name="Side Menu: Interest Dashboard">Tableau de bord des centres d’intérêt</a></li>
+        <li><a rel="external" href="https://support.mozilla.org/kb/private-browsing-browse-web-without-saving-info" data-link-type="nav" data-link-name="Side Menu: Private Browsing">Navigation privée</a></li>
+        <li><a rel="external" href="https://addons.mozilla.org/" data-link-type="nav" data-link-name="Side Menu: Add-ons">Modules</a></li>
+        <li><a rel="external" href="https://github.com/abeudin/ffsync_ynh/issues" data-link-type="nav" data-link-name="Side Menu: Need help?">Need Help&nbsp;?</a></li>
+      </ul>
+
+      <ul class="adjunctnav">
+        <li><a href="https://www.mozilla.org/fr/firefox/channel/android/" data-link-type="nav" data-link-name="Side Menu: Pre-release downloads">Télécharger une préversion</a>
+        </li><li><a href="https://www.mozilla.org/fr/firefox/dnt/" data-link-type="nav" data-link-name="Side Menu: Do Not Track">Ne pas me pister</a></li>
+        <li><a rel="external" href="https://www.youtube.com/watch?v=Ewk0YtFTBec&amp;list=PLA8ABF6B7A66A0C5E&amp;index=15" data-link-type="nav" data-link-name="Side Menu: Private Browsing">Navigation privée</a></li>
+        <li><a rel="external" href="https://addons.mozilla.org/android/" data-link-type="nav" data-link-name="Side Menu: Android Add-ons">Modules</a></li>
+        <li><a rel="external" href="https://support.mozilla.org/products/mobile" data-link-type="nav" data-link-name="Side Menu: Need help?">Besoin d’aide&nbsp;?</a></li>
+      </ul>
+
+      <ul class="adjunctnav">
+        <li><a href="https://www.mozilla.org/fr/firefox/channel/ios/" data-link-type="nav" data-link-name="Side Menu: Pre-release downloads">Télécharger une préversion</a>
+        </li><li><a rel="external" href="https://support.mozilla.org/products/ios" data-link-type="nav" data-link-name="Side Menu: Need help?">Besoin d’aide&nbsp;?</a></li>
+      </ul>
+    </div>
+    <div id="fxfamilynav-cta-wrapper" class="fxfamilynav-cta-wrapper"></div>
+
+
+
+
+    <div id="tabzilla">
+      <a href="https://www.mozilla.org/fr/" data-link-type="nav" data-link-name="tabzilla" style="background-image:url('${public_url}/media/img/tabzilla/tabzilla-static.953a65a1f4a4.png') !important;">Mozilla</a>
+    </div>
+  </div></header></div>
+
+
+        <div id="wrapper">
+
+            <div class="sync-anim on complete">
+                <div class="device laptop">
+                    <div class="inner">
+                        <div class="logo"></div>
+                        <div class="icon history"></div>
+                        <div class="icon bookmarks"></div>
+                        <div class="icon passwords"></div>
+                    </div>
+                    <div class="arrows"></div>
+                </div>
+                <div class="device tablet">
+                    <div class="inner">
+                        <div class="logo"></div>
+                        <div class="icon history"></div>
+                        <div class="icon bookmarks"></div>
+                        <div class="icon passwords"></div>
+                    </div>
+                </div>
+                <div class="device phone">
+                    <div class="inner">
+                        <div class="logo"></div>
+                        <div class="icon history"></div>
+                        <div class="icon bookmarks"></div>
+                        <div class="icon passwords"></div>
+                    </div>
+                </div>
+            </div>
+            <header role="banner" class="intro container">
+                <div class="show-fx-31-signed-in">
+                    <h1>Ready, Set, Sync</h1>
+                    <p>
+                        You’re signed up and ready to access <em>your</em> Firefox anywhere, anytime.
+                    </p>
+                </div>
+                <div class="show-fx-31-signed-out show-fx-29-30 show-fx-28-older show-fx-android show-not-fx show-default">
+                    <h1>Take your Web with you</h1>
+                    <p>
+                        Sync Firefox wherever you use it to access your bookmarks, passwords, tabs and more from any smartphone, tablet or computer.
+                    </p>
+                </div>
+            </header>
+
+            <section class="primary">
+                <div id="howto" class="inner-wrapper">
+                    <div class="container">
+
+
+                        <div class="show-fx-29-30 warning">
+                            <p>
+                                It looks like you’re running an older version of Firefox.
+                            </p>
+                        </div>
+
+                        <div class="show-fx-28-older warning">
+                            <p>
+                                The new version of Sync only works with the latest version of Firefox
+                            </p>
+                        </div>
+
+                        <div class="show-not-fx warning">
+                            <p>
+
+                                Sync is just one of the great features you’ll only get with Firefox.
+
+                            </p>
+                        </div>
+
+
+
+                        <div class="buttons">
+                            <div class="show-fx-31-signed-in">
+
+                                <p class="button-footer">
+                                    <a href="https://github.com/abeudin/ffsync_ynh/issues" class="ga-link" data-interaction="outbound link click">
+                                        Need help?
+                                    </a>
+                                </p>
+                            </div>
+
+                            <div class="show-fx-31-signed-out">
+
+                                <button class="button" data-button-name="Get started with Sync" data-cta-position="Primary" id="cta-sync">
+                                    Get started with Sync
+                                </button>
+
+                            </div>
+
+                            <div class="show-fx-29-30">
+                                <a href="https://support.mozilla.org/kb/update-firefox-latest-version" class="button" data-interaction="button click" data-element-action="Sync CTA" id="cta-update">
+                                    Update your Firefox
+                                </a>
+                            </div>
+
+                            <div class="show-not-fx show-fx-28-older">
+
+
+
+                                <div id="download-button-desktop-release" class="download-button">
+
+                                    <div class="nojs-download">
+
+                                        <div class="download download-dumb">
+                                            <p role="heading" class="download-heading">
+
+                                                Download Firefox
+                                                — English (US)
+                                            </p>
+                                            <ul>
+                                                <li><a href="https://download-sha1.allizom.org/?product=firefox-stub&amp;os=win&amp;lang=en-US" class="download-link button green" data-link-type="download" data-download-version="winsha1" data-download-os="Desktop">Windows (XP/Vista)</a>
+                                                </li><li><a href="https://download.mozilla.org/?product=firefox-stub&amp;os=win&amp;lang=en-US" class="download-link button green" data-link-type="download" data-download-version="win" data-download-os="Desktop">Windows</a>
+                                            </li><li><a href="https://download.mozilla.org/?product=firefox-50.0.2-SSL&amp;os=win64&amp;lang=en-US" class="download-link button green" data-link-type="download" data-download-version="win64" data-download-os="Desktop">Windows 64-bit</a>
+                                            </li><li><a href="https://download.mozilla.org/?product=firefox-50.0.2-SSL&amp;os=osx&amp;lang=en-US" class="download-link button green" data-link-type="download" data-download-version="osx" data-download-os="Desktop">OS X</a>
+                                            </li><li><a href="https://download.mozilla.org/?product=firefox-50.0.2-SSL&amp;os=linux&amp;lang=en-US" class="download-link button green" data-link-type="download" data-download-version="linux" data-download-os="Desktop">Linux</a>
+                                            </li><li><a href="https://download.mozilla.org/?product=firefox-50.0.2-SSL&amp;os=linux64&amp;lang=en-US" class="download-link button green" data-link-type="download" data-download-version="linux64" data-download-os="Desktop">Linux 64-bit</a>
+                                            </li><li><a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox&amp;referrer=utm_source%3Dmozilla%26utm_medium%3DReferral%26utm_campaign%3Dmozilla-org" class="download-link button green" data-link-type="download" data-download-version="android" data-download-os="Android">Android</a>
+                                            </li><li><a href="https://itunes.apple.com/us/app/apple-store/id989804926?pt=373246&amp;mt=8" class="download-link button green" data-link-type="download" data-download-version="ios" data-download-os="iOS">iOS</a>
+                                            </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="unrecognized-download">
+                                        <p>Your system may not meet the requirements for Firefox, but you can try one of these versions:</p>
+
+                                        <div class="download download-dumb">
+                                            <p role="heading" class="download-heading">
+
+                                                Download Firefox
+                                                — English (US)
+                                            </p>
+                                            <ul>
+                                                <li><a href="https://download-sha1.allizom.org/?product=firefox-stub&amp;os=win&amp;lang=en-US" class="download-link button green" data-link-type="download" data-download-version="winsha1" data-download-os="Desktop">Windows (XP/Vista)</a>
+                                                </li><li><a href="https://download.mozilla.org/?product=firefox-stub&amp;os=win&amp;lang=en-US" class="download-link button green" data-link-type="download" data-download-version="win" data-download-os="Desktop">Windows</a>
+                                            </li><li><a href="https://download.mozilla.org/?product=firefox-50.0.2-SSL&amp;os=win64&amp;lang=en-US" class="download-link button green" data-link-type="download" data-download-version="win64" data-download-os="Desktop">Windows 64-bit</a>
+                                            </li><li><a href="https://download.mozilla.org/?product=firefox-50.0.2-SSL&amp;os=osx&amp;lang=en-US" class="download-link button green" data-link-type="download" data-download-version="osx" data-download-os="Desktop">OS X</a>
+                                            </li><li><a href="https://download.mozilla.org/?product=firefox-50.0.2-SSL&amp;os=linux&amp;lang=en-US" class="download-link button green" data-link-type="download" data-download-version="linux" data-download-os="Desktop">Linux</a>
+                                            </li><li><a href="https://download.mozilla.org/?product=firefox-50.0.2-SSL&amp;os=linux64&amp;lang=en-US" class="download-link button green" data-link-type="download" data-download-version="linux64" data-download-os="Desktop">Linux 64-bit</a>
+                                            </li><li><a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox&amp;referrer=utm_source%3Dmozilla%26utm_medium%3DReferral%26utm_campaign%3Dmozilla-org" class="download-link button green" data-link-type="download" data-download-version="android" data-download-os="Android">Android</a>
+                                            </li><li><a href="https://itunes.apple.com/us/app/apple-store/id989804926?pt=373246&amp;mt=8" class="download-link button green" data-link-type="download" data-download-version="ios" data-download-os="iOS">iOS</a>
+                                            </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                    <p class="unsupported-download">
+                                        Your system doesn't meet the <a href="/en-US/firefox/system-requirements/">requirements</a> to run Firefox.
+                                    </p>
+                                    <p class="unsupported-download-osx">
+                                        Your system doesn't meet the <a href="https://support.mozilla.org/kb/firefox-osx">requirements</a> to run Firefox.
+                                    </p>
+                                    <p class="linux-arm-download">
+                                        Please follow <a href="https://support.mozilla.org/kb/install-firefox-linux">these instructions</a> to install Firefox.
+                                    </p>
+
+                                    <ul class="download-list" role="presentation">
+
+                                        <li class="os_winsha1">
+                                            <a class="download-link button green" href="/firefox/new/?scene=2" data-direct-link="https://download-sha1.allizom.org/?product=firefox-stub&amp;os=win&amp;lang=en-US" data-link-type="download" data-display-name="Windows (XP/Vista)" data-download-version="winsha1" data-download-os="Desktop">
+                                                <strong class="download-title">
+
+
+
+                                                    Download Firefox
+
+
+
+                                                </strong>
+                                            </a>
+                                        </li>
+
+                                        <li class="os_win">
+                                            <a class="download-link button green" href="/firefox/new/?scene=2" data-direct-link="https://download.mozilla.org/?product=firefox-stub&amp;os=win&amp;lang=en-US" data-link-type="download" data-display-name="Windows" data-download-version="win" data-download-os="Desktop">
+                                                <strong class="download-title">
+
+
+
+                                                    Download Firefox
+
+
+
+                                                </strong>
+                                            </a>
+                                        </li>
+
+                                        <li class="os_win64">
+                                            <a class="download-link button green" href="/firefox/new/?scene=2" data-direct-link="https://download.mozilla.org/?product=firefox-50.0.2-SSL&amp;os=win64&amp;lang=en-US" data-link-type="download" data-display-name="Windows 64-bit" data-download-version="win64" data-download-os="Desktop">
+                                                <strong class="download-title">
+
+
+
+                                                    Download Firefox
+
+
+
+                                                </strong>
+                                            </a>
+                                        </li>
+
+                                        <li class="os_osx">
+                                            <a class="download-link button green" href="/firefox/new/?scene=2" data-direct-link="https://download.mozilla.org/?product=firefox-50.0.2-SSL&amp;os=osx&amp;lang=en-US" data-link-type="download" data-display-name="OS X" data-download-version="osx" data-download-os="Desktop">
+                                                <strong class="download-title">
+
+
+
+                                                    Download Firefox
+
+
+
+                                                </strong>
+                                            </a>
+                                        </li>
+
+                                        <li class="os_linux">
+                                            <a class="download-link button green" href="/firefox/new/?scene=2" data-direct-link="https://download.mozilla.org/?product=firefox-50.0.2-SSL&amp;os=linux&amp;lang=en-US" data-link-type="download" data-display-name="Linux" data-download-version="linux" data-download-os="Desktop">
+                                                <strong class="download-title">
+
+
+
+                                                    Download Firefox
+
+
+
+                                                </strong>
+                                            </a>
+                                        </li>
+
+                                        <li class="os_linux64">
+                                            <a class="download-link button green" href="/firefox/new/?scene=2" data-direct-link="https://download.mozilla.org/?product=firefox-50.0.2-SSL&amp;os=linux64&amp;lang=en-US" data-link-type="download" data-display-name="Linux 64-bit" data-download-version="linux64" data-download-os="Desktop">
+                                                <strong class="download-title">
+
+
+
+                                                    Download Firefox
+
+
+
+                                                </strong>
+                                            </a>
+                                        </li>
+
+                                        <li class="os_android">
+                                            <a class="download-link button green" href="https://play.google.com/store/apps/details?id=org.mozilla.firefox&amp;referrer=utm_source%3Dmozilla%26utm_medium%3DReferral%26utm_campaign%3Dmozilla-org" data-link-type="download" data-display-name="Android" data-download-version="android" data-download-os="Android">
+                                                <strong class="download-title">
+
+
+
+                                                    <span>Firefox</span> for Android
+
+
+
+                                                </strong>
+                                            </a>
+                                        </li>
+
+                                        <li class="os_ios">
+                                            <a class="download-link button green" href="https://itunes.apple.com/us/app/apple-store/id989804926?pt=373246&amp;mt=8" data-link-type="download" data-display-name="iOS" data-download-version="ios" data-download-os="iOS">
+                                                <strong class="download-title">
+
+
+                                                    <span>Firefox</span> for iOS
+
+
+                                                </strong>
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                    <small class="fx-privacy-link">
+                                        <a href="/en-US/privacy/firefox/">Firefox Privacy</a>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="show-fx-29-30 show-default instructions">
+                            <h3>Get started with Sync in four easy steps:</h3>
+                            <section>
+                                <ol>
+                                    <li>Open the <a class="menu ga-link" data-interaction="outbound link click" href="https://support.mozilla.org/kb/learn-more-about-the-design-of-new-firefox#w_a-handy-new-menu">menu</a> in the top right of Firefox and select “<strong>Sign in to Sync.</strong>”</li>
+
+                                    <li>Click “<strong>Get started</strong>” in the tab that opens.</li>
+                                    <li>Enter an email address and password to “<strong>Create a Firefox Account.</strong>”</li>
+                                    <li>Click “<strong>Next</strong>” to get a verification sent to your email.</li>
+                                </ol>
+                                <p>After you check your email and click the verification link, you’ll be all set! Firefox will automatically sync in the background from then on.</p>
+                            </section>
+                            <aside role="complimentary">
+                                <ul class="unstyled">
+                                    <li><a class="more ga-link" data-interaction="outbound link click" href="https://support.mozilla.org/kb/how-do-i-set-up-firefox-sync">Get more detailed instructions.</a></li>
+                                    <li><a class="more ga-link" data-interaction="outbound link click" href="https://support.mozilla.org/kb/how-to-update-to-the-new-firefox-sync">Using an older version of Sync?</a></li>
+                                </ul>
+                            </aside>
+                        </div>
+
+                        <div class="show-fx-28-older instructions">
+                            <ul class="unstyled">
+                                <li><a class="more ga-link" data-interaction="outbound link click" href="https://support.mozilla.org/kb/how-do-i-set-up-firefox-sync">Get more detailed instructions.</a></li>
+                                <li><a class="more ga-link" data-interaction="outbound link click" href="https://support.mozilla.org/kb/how-to-update-to-the-new-firefox-sync">Using an older version of Sync?</a></li>
+                            </ul>
+                        </div>
+
+
+                        <div class="show-fx-android instructions">
+                            <h3>How to set up Sync in five easy steps:</h3>
+                            <section>
+                                <ol>
+
+                                    <li>Tap the <strong>Menu</strong> button (either below the screen or at the top right corner of the browser).</li>
+                                    <li>Select <strong>Settings</strong> (you may need to tap <strong>More</strong> first).</li>
+                                    <li>Tap <strong>Sync</strong> and then <strong>Get Started</strong>.</li>
+                                    <li>The <strong>Create a Firefox Account page</strong> will open in a new tab.</li>
+                                    <li>Fill out the form and click <strong>Next</strong>.</li>
+                                </ol>
+                                <p>After you check your email and click the verification link, you’ll be ready to go! Don’t forget to connect all your other devices to get the most of Sync.</p>
+                            </section>
+                            <aside role="complimentary">
+                                <ul class="unstyled">
+                                    <li><a class="more ga-link" data-interaction="outbound link click" href="https://support.mozilla.org/kb/how-do-i-set-up-firefox-sync">Get more detailed instructions.</a></li>
+                                    <li><a class="more ga-link" data-interaction="outbound link click" href="https://support.mozilla.org/kb/how-to-update-to-the-new-firefox-sync">Using an older version of Sync?</a></li>
+                                </ul>
+                            </aside>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+
+
+<section class="secondary">
+  <div class="inner-wrapper">
+    <div class="container">
+      <header style="text-align:justify;">
+        <h2>How to sync your Firefox with this server instead of Mozilla’s?</h2>
+        <p>
+            You can safely use the Mozilla-hosted Firefox Accounts server in combination with a self-hosted sync storage server. The authentication and encryption protocols are designed so that the account server does not know the user’s plaintext password, and therefore cannot access their stored sync data.
+        </p><p>
+            Alternatively, you can also Run your own <a href="https://docs.services.mozilla.com/howtos/run-fxa.html">Firefox Accounts Server</a> to control all aspects of the system. The process for doing so is currently very experimental and not well documented.
+        </p>
+        <p>
+            To configure Firefox to talk to your new Sync server, go to <code>"about:config"</code>,
+            search for <code>"identity.sync.tokenserver.uri"</code> and change its value to the URL of your server
+            with a path of <code>"token/1.0/sync/1.5"</code>:
+        </p>
+          <hr><code>
+            identity.sync.tokenserver.uri: ${public_url}/token/1.0/sync/1.5
+        </code>
+          <hr><p>
+            Since Firefox 33, Firefox for Android has supported custom sync servers,
+            should be a breeze.
+        </p>
+        <h3>Solving problems with Android</h3>
+        <p>The sure-fire way to know what Sync on Android is really doing is to
+          observe the Android device log using adb logcat. You’ll want to bump 
+          your log-level:
+		<hr><code>
+		adb shell setprop log.tag.FxAccounts VERBOSE
+		</code><hr>
+		<p>
+		Then, you can observe the log using:
+		</p>
+		<hr><code>
+		adb logcat | grep FxAccounts
+		</code><hr>
+		<p>
+		It’s best to observe the log while you force a sync from the Android Settings App. You should see output like:
+		</p>
+		<hr><pre style="overflow:auto;word-wrap:normal;white-space:pre">
+D FxAccounts(...) fennec :: BaseResource :: HTTP GET https://token.stage.mozaws.net/1.0/sync/1.5
+...
+D FxAccounts(...) fennec :: BaseResource :: HTTP GET https://sync-4-us-east-1.stage.mozaws.net/</pre><hr>
+See <a href="http://160.twinql.com/how-to-file-a-good-android-sync-bug/">how to file a good Android Sync bug</a> for details.
+        	
+        </p>
+      </header>
+
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="inner-wrapper" style='background-image:url("${public_url}/media/img/firefox/sync/device-lineup.a60618c7dacb.png") !important;'>
+    <div class="container">
+      <header>
+        <h3>Change the Sync server on each installation</h3>
+
+      </header>
+      <aside>
+        <p>
+            To properly have all your data on that server, make sure each and every of your Firefox installations is setup to use this server. The list of connected devices can be seen on your Firefox Account page.
+        </p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+      </div><!-- close #wrapper -->
+
+
+
+
+              <footer id="colophon" class="">
+        <nav class="row">
+          <div class="col col-1">
+            <div class="logo"><a href="https://www.mozilla.org/fr/" data-link-type="footer" data-link-name="Mozilla" style='background:url("${public_url}/media/img/sandstone/footer-mozilla.fafef0912042.png") !important;'>Mozilla</a></div>
+            <p class="license">Portions of this content are ©1998–2016 by individual mozilla.org contributors. Content available under a <a href="https://www.mozilla.org/fr/foundation/licensing/website-content/">Creative Commons license</a>.</p>
+          </div>
+          <div class="col col-2">
+
+
+
+            <ul class="links-legal">
+              <!--<li><a href="https://www.mozilla.org/fr/privacy/" data-link-type="footer" data-link-name="Privacy">Vie privée</a></li>-->
+            </ul>
+          </div>
+          <div class="col col-3">
+            <div class="lang-switcher">
+
+
+            </div>
+          </div>
+        </nav>
+      </footer>
+
+
+    </div><!-- close #outer-wrapper -->
+
+    <!--[if IE 9]>
+      <script src="/media/js/libs/matchMedia.3fd01d1af18b.js"></script>
+    <![endif]-->
+
+
+      <script type="text/javascript" src="sync_files/common-bundle.js" charset="utf-8"></script>
+
+
+  <!--[if IE 9]>
+    <script type="text/javascript" src="/media/js/matchmedia_addlistener-bundle.a6f70a2ac356.js" charset="utf-8"></script>
+  <![endif]-->
+  <script type="text/javascript" src="sync_files/firefox_sync-bundle.js" charset="utf-8"></script>
+
+
+
+</body></html>
