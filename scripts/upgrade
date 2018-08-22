@@ -190,7 +190,8 @@ cp -r ../sources/page $final_path/syncserver/
 # SECURE FILES AND DIRECTORIES
 #=================================================
 
-# no need, keep the default root:root
+chown $app -R $final_path
+chmod u=rwX,g=rX,o= -R $final_path
 
 #=================================================
 # SETUP LOGROTATE
