@@ -190,10 +190,3 @@ ynh_use_logrotate  /var/log/uwsgi/$app --non-append
 #=================================================
 
 ynh_app_setting_set "$app" skipped_uris "/"
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-
-systemctl start "uwsgi-app@$app.service"
-systemctl reload nginx

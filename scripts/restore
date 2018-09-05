@@ -6,12 +6,7 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-if [ ! -e _common.sh ]; then
-	# Get the _common.sh file if it's not in the current directory
-	cp ../settings/scripts/_common.sh ./_common.sh
-	chmod a+rx _common.sh
-fi
-source _common.sh
+source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -44,16 +39,9 @@ test ! -d "$final_path" \
 #=================================================
 # STANDARD RESTORATION STEPS
 #=================================================
-# RESTORE THE NGINX CONFIGURATION
-#=================================================
 
-ynh_restore_file "/etc/nginx/conf.d/$domain.d/$app.conf"
-
-#=================================================
-# RESTORE THE APP MAIN DIR
-#=================================================
-
-ynh_restore_file "$final_path"
+# Restore all config and data
+ynh_restore
 
 #=================================================
 # RESTORE THE MYSQL DATABASE
@@ -88,29 +76,15 @@ ynh_install_app_dependencies python-dev python-virtualenv \
 			 `# ARM support: ` \
 			 build-essential libssl-dev libffi-dev
 
-#=================================================
-# RESTORE THE UWSGI MECANICS
-#=================================================
-
-ynh_restore_file "/etc/systemd/system/uwsgi-app@.service"
-
-# make sure the folder for sockets exists and set authorizations
-mkdir -p /var/run/uwsgi/
-chown root:www-data /var/run/uwsgi/
-chmod -R 775 /var/run/uwsgi/
-
-# make sure the folder for logs exists and set authorizations
-mkdir -p /var/log/uwsgi/app/
-chown root:www-data /var/log/uwsgi/app/
-chmod -R 775 /var/log/uwsgi/app/
+# set authorizations
+chown $app:root /var/log/uwsgi/$app
+chmod -R u=rwX,g=rX,o= /var/log/uwsgi/$app
 
 #=================================================
 # RESTORE SERVICE
 #=================================================
 
 usermod --append --groups www-data "$app"
-
-ynh_restore_file "/etc/uwsgi/apps-available/$app.ini"
 
 systemctl daemon-reload
 systemctl enable "uwsgi-app@$app.service"
@@ -125,7 +99,7 @@ yunohost service add "uwsgi-app@$app.service" --log "/var/log/uwsgi/app/$app"
 # RESTORE THE LOGROTATE CONFIGURATION
 #=================================================
 
-ynh_restore_file "/etc/logrotate.d/$app"
+ynh_use_logrotate  /var/log/uwsgi/$app --non-append
 
 #=================================================
 # GENERIC FINALIZATION
@@ -133,5 +107,6 @@ ynh_restore_file "/etc/logrotate.d/$app"
 # RELOAD NGINX AND PHP-FPM
 #=================================================
 
+systemctl start "uwsgi-app@$app.socket"
 systemctl start "uwsgi-app@$app.service"
 systemctl reload nginx

@@ -75,7 +75,7 @@ ynh_add_uwsgi_service () {
 	systemctl daemon-reload
 	systemctl stop "uwsgi-app@$app.service"
 	systemctl enable "uwsgi-app@$app.socket"
-	systemctl start "uwsgi-app@$app.socket"
+	systemctl restart "uwsgi-app@$app.socket"
 	systemctl enable "uwsgi-app@$app.service"
 	systemctl start "uwsgi-app@$app.service"
 

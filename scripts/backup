@@ -6,12 +6,7 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-if [ ! -e _common.sh ]; then
-	# Get the _common.sh file if it's not in the current directory
-	cp ../settings/scripts/_common.sh ./_common.sh
-	chmod a+rx _common.sh
-fi
-source _common.sh
+source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -54,10 +49,10 @@ ynh_mysql_dump_db "$db_name" > db.sql
 #=================================================
 # SPECIFIC BACKUP
 #=================================================
-# BACKUP LOGROTATE
+# Backup Log
 #=================================================
 
-ynh_backup "/etc/logrotate.d/$app"
+ynh_backup "/var/log/uwsgi/$app"
 
 #=================================================
 # BACKUP THE UWSGI FILES
@@ -65,3 +60,4 @@ ynh_backup "/etc/logrotate.d/$app"
 
 ynh_backup "/etc/uwsgi/apps-available/$app.ini"
 ynh_backup "/etc/systemd/system/uwsgi-app@.service"
+ynh_backup "/etc/systemd/system/uwsgi-app@.socket"
