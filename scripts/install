@@ -114,12 +114,6 @@ ynh_system_user_create "$app" "$final_path"
 #=================================================
 # SPECIFIC SETUP
 #=================================================
-# SETUP UWSGI
-#=================================================
-
-ynh_add_uwsgi_service
-
-#=================================================
 # create config file syncserver.ini
 #=================================================
 
@@ -177,6 +171,12 @@ cp -r ../sources/page $final_path/syncserver/
 (cd "$final_path/syncserver" && patch -p1 < $YNH_CWD/../sources/homepage.patch) || echo "Unable to apply patches"
 
 #=================================================
+# SETUP UWSGI
+#=================================================
+
+ynh_add_uwsgi_service
+
+#=================================================
 # GENERIC FINALIZATION
 #=================================================
 # SECURE FILES AND DIRECTORIES
@@ -189,7 +189,7 @@ chmod u=rwX,g=rX,o= -R $final_path
 # SETUP LOGROTATE
 #=================================================
 
-ynh_use_logrotate
+ynh_use_logrotate /var/log/uwsgi/$app
 
 #=================================================
 # SETUP SSOWAT

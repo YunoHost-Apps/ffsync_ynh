@@ -1,19 +1,15 @@
 #!/bin/bash
 
+# Check if system wide templates are available and correcly configured
+#
+# usage: ynh_check_global_uwsgi_config
 ynh_check_global_uwsgi_config () {
 	uwsgi --version || ynh_die "You need to add uwsgi (and appropriate plugin) as a dependency"
 
+	cp ../conf/uwsgi-app@.socket /etc/systemd/system/uwsgi-app@.socket
 	cp ../conf/uwsgi-app@.service /etc/systemd/system/uwsgi-app@.service
 
-	# make sure the folder for sockets exists and set authorizations
-	mkdir -p /var/run/uwsgi/
-	chown root:www-data /var/run/uwsgi/
-	chmod -R 775 /var/run/uwsgi/
-
-	# make sure the folder for logs exists and set authorizations
-	mkdir -p /var/log/uwsgi/app/
-	chown root:www-data /var/log/uwsgi/app/
-	chmod -R 775 /var/log/uwsgi/app/
+	systemctl daemon-reload
 }
 
 # Create a dedicated uwsgi ini file to use with generic uwsgi service
@@ -28,7 +24,7 @@ ynh_check_global_uwsgi_config () {
 #   __PATH__      by  $path_url
 #   __FINALPATH__ by  $final_path
 #
-# usage: ynh_add_systemd_config
+# usage: ynh_add_uwsgi_service
 #
 # to interact with your service: `systemctl <action> uwsgi-app@app`
 ynh_add_uwsgi_service () {
@@ -54,26 +50,32 @@ ynh_add_uwsgi_service () {
 	fi
 	ynh_store_file_checksum "$finaluwsgiini"
 
-	chown $app "$finaluwsgiini"
+	chown $app:root "$finaluwsgiini"
+
+	# make sure the folder for logs exists and set authorizations
+	mkdir -p /var/log/uwsgi/$app
+	chown $app:root /var/log/uwsgi/$app
+	chmod -R u=rwX,g=rX,o= /var/log/uwsgi/$app
 
 	systemctl daemon-reload
-	systemctl enable "uwsgi-app@$app.service"
+	systemctl enable "uwsgi-app@$app.socket"
+	systemctl start "uwsgi-app@$app.socket"
 
 	# Add as a service
-	yunohost service add "uwsgi-app@$app.service" --log "/var/log/uwsgi/app/$app"
+	yunohost service add "uwsgi-app@$app" --log "/var/log/uwsgi/$app/$app.log"
 }
 
 # Remove the dedicated uwsgi ini file
 #
-# usage: ynh_remove_systemd_config
+# usage: ynh_remove_uwsgi_service
 ynh_remove_uwsgi_service () {
 	finaluwsgiini="/etc/uwsgi/apps-available/$app.ini"
 	if [ -e "$finaluwsgiini" ]; then
-		systemctl stop "uwsgi-app@$app.service"
-		systemctl disable "uwsgi-app@$app.service"
-		yunohost service remove "uwsgi-app@$app.service"
+		systemctl stop "uwsgi-app@$app.socket"
+		systemctl disable "uwsgi-app@$app.socket"
+		yunohost service remove "uwsgi-app@$app"
 
 		ynh_secure_remove "$finaluwsgiini"
-		ynh_secure_remove "/var/log/uwsgi/app/$app"
+		ynh_secure_remove "/var/log/uwsgi/$app"
 	fi
 }

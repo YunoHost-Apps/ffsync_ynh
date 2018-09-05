@@ -197,7 +197,7 @@ chmod u=rwX,g=rX,o= -R $final_path
 # SETUP LOGROTATE
 #=================================================
 
-ynh_use_logrotate
+ynh_use_logrotate  /var/log/uwsgi/$app --non-append
 
 #=================================================
 # SETUP SSOWAT
