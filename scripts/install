@@ -114,37 +114,6 @@ ynh_system_user_create "$app" "$final_path"
 #=================================================
 # SPECIFIC SETUP
 #=================================================
-# create config file syncserver.ini
-#=================================================
-
-# Generate random password and save
-secret=$(ynh_string_random)
-ynh_app_setting_set "$app" secret "$secret"
-
-# Copy Files
-ynh_replace_string "__APP__"       "$app"        "$finaluwsgiini"
-ynh_replace_string "__DOMAIN__"    "$domain"     "$finaluwsgiini"
-ynh_replace_string "__PATH__"      "$path_url"   "$finaluwsgiini"
-ynh_replace_string "__NAME__"      "$app"        "$finaluwsgiini"
-ynh_replace_string "__FINALPATH__" "$final_path" "$finaluwsgiini"
-ynh_replace_string "__SECRET__"    "$secret"     "$finaluwsgiini"
-
-ynh_replace_string "__DB_USER__"   "$db_user" "$finaluwsgiini"
-ynh_replace_string "__DB_PWD__"    "$db_pwd"  "$finaluwsgiini"
-ynh_replace_string "__DB_NAME__"   "$db_name" "$finaluwsgiini"
-
-rm "$final_path/syncserver.ini"
-ln -s "$finaluwsgiini" "$final_path/syncserver.ini"
-
-#=================================================
-# MODIFY A CONFIG FILE
-#=================================================
-
-# TODO: fix this css patch
-# ynh_replace_string "media\/img@$path_url\/media\/img@g" $final_path/syncserver/page/sync_files/firefox_sync-bundle.css
-# ynh_replace_string "media\/img@$path_url\/media\/img@g" $final_path/syncserver/page/sync_files/responsive-bundle.css
-
-#=================================================
 # pip installation
 #=================================================
 
@@ -171,20 +140,38 @@ cp -r ../sources/page $final_path/syncserver/
 (cd "$final_path/syncserver" && patch -p1 < $YNH_CWD/../sources/homepage.patch) || echo "Unable to apply patches"
 
 #=================================================
-# SETUP UWSGI
-#=================================================
-
-ynh_add_uwsgi_service
-
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
 
 chown $app -R $final_path
 chmod u=rwX,g=rX,o= -R $final_path
 
+
+#=================================================
+# SETUP UWSGI
+#=================================================
+
+# Generate random password and save
+secret=$(ynh_string_random)
+ynh_app_setting_set "$app" secret "$secret"
+
+# create config file syncserver.ini
+rm "$final_path/syncserver.ini"
+ln -s "/etc/uwsgi/apps-available/$app.ini" "$final_path/syncserver.ini"
+
+# configure uwsgi
+ynh_add_uwsgi_service 'domain secret db_user db_pwd db_name'
+
+#=================================================
+# MODIFY A CONFIG FILE
+#=================================================
+
+# TODO: fix this css patch
+# ynh_replace_string "media\/img@$path_url\/media\/img@g" $final_path/syncserver/page/sync_files/firefox_sync-bundle.css
+# ynh_replace_string "media\/img@$path_url\/media\/img@g" $final_path/syncserver/page/sync_files/responsive-bundle.css
+
+#=================================================
+# GENERIC FINALIZATION
 #=================================================
 # SETUP LOGROTATE
 #=================================================
@@ -197,10 +184,3 @@ ynh_use_logrotate /var/log/uwsgi/$app
 
 # accessible by everyone (authentification is done by firefox accounts)
 ynh_app_setting_set "$app" skipped_uris "/"
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-
-systemctl start "uwsgi-app@$app.service"
-systemctl reload nginx
