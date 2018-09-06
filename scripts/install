@@ -98,12 +98,9 @@ then
 	# uwsgi_param is only needed for non-root installation
 	ynh_replace_string "uwsgi_param "     "#uwsgi_param "     "$finalnginxconf"
 	ynh_replace_string "uwsgi_modifier1 " "#uwsgi_modifier1 " "$finalnginxconf"
-
-	ynh_store_file_checksum "$finalnginxconf"
-else
-	# add rewrite for alias_traversal protection
-	ynh_replace_string "^#sub_path_only" "" "../conf/nginx.conf"
 fi
+ynh_store_file_checksum "$finalnginxconf"
+systemctl reload nginx
 
 #=================================================
 # CREATE DEDICATED USER
