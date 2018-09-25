@@ -9,12 +9,14 @@
         "fr": "Le serveur de synchronisation de Mozilla, pour héberger vos données Firefox"
     },
     "maintainer": {
-        "name": "jibec",
-        "email": "jean-baptiste@holcroft.fr"
+        "name": "Josué Tille",
+        "email": "josue@tille.ch"
     },
     "previous_maintainers": [{
         "name": "beudbeud",
-        "email": "beudbeud@beudibox.fr"
+        "email": "beudbeud@beudibox.fr",
+        "name": "jibec",
+        "email": "jean-baptiste@holcroft.fr"
     }],
     "requirements": {
         "yunohost": ">=3.0.0"
