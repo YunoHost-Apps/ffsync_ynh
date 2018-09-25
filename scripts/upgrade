@@ -176,12 +176,6 @@ ynh_add_uwsgi_service 'domain secret db_user db_pwd db_name'
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
-# SETUP LOGROTATE
-#=================================================
-
-ynh_use_logrotate  /var/log/uwsgi/$app --non-append
-
-#=================================================
 # SETUP SSOWAT
 #=================================================
 

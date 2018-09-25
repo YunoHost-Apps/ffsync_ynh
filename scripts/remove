@@ -54,12 +54,6 @@ ynh_secure_remove "$final_path"
 ynh_remove_nginx_config
 
 #=================================================
-# REMOVE LOGROTATE CONFIGURATION
-#=================================================
-
-ynh_remove_logrotate
-
-#=================================================
 # GENERIC FINALIZATION
 #=================================================
 # REMOVE DEDICATED USER
