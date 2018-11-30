@@ -6,14 +6,12 @@
 ynh_check_global_uwsgi_config () {
 	uwsgi --version || ynh_die "You need to add uwsgi (and appropriate plugin) as a dependency"
 
-	cp ../conf/uwsgi-app@.socket /etc/systemd/system/uwsgi-app@.socket
 	cp ../conf/uwsgi-app@.service /etc/systemd/system/uwsgi-app@.service
 
 	systemctl daemon-reload
 }
 
 # Create a dedicated uwsgi ini file to use with generic uwsgi service
-# It will install generic uwsgi.socket and
 #
 # This will use a template in ../conf/uwsgi.ini
 # and will replace the following keywords with
@@ -74,8 +72,6 @@ ynh_add_uwsgi_service () {
 
 	systemctl daemon-reload
 	systemctl stop "uwsgi-app@$app.service"
-	systemctl enable "uwsgi-app@$app.socket"
-	systemctl restart "uwsgi-app@$app.socket"
 	systemctl enable "uwsgi-app@$app.service"
 	systemctl start "uwsgi-app@$app.service"
 
@@ -89,8 +85,6 @@ ynh_add_uwsgi_service () {
 ynh_remove_uwsgi_service () {
 	local finaluwsgiini="/etc/uwsgi/apps-available/$app.ini"
 	if [ -e "$finaluwsgiini" ]; then
-		systemctl stop "uwsgi-app@$app.socket"
-		systemctl disable "uwsgi-app@$app.socket"
 		systemctl stop "uwsgi-app@$app.service"
 		systemctl disable "uwsgi-app@$app.service"
 		yunohost service remove "uwsgi-app@$app"

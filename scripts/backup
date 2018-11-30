@@ -60,4 +60,3 @@ ynh_backup "/var/log/uwsgi/$app"
 
 ynh_backup "/etc/uwsgi/apps-available/$app.ini"
 ynh_backup "/etc/systemd/system/uwsgi-app@.service"
-ynh_backup "/etc/systemd/system/uwsgi-app@.socket"

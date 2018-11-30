@@ -101,6 +101,5 @@ yunohost service add "uwsgi-app@$app.service" --log "/var/log/uwsgi/app/$app"
 # RELOAD NGINX AND PHP-FPM
 #=================================================
 
-systemctl start "uwsgi-app@$app.socket"
 systemctl start "uwsgi-app@$app.service"
 systemctl reload nginx
