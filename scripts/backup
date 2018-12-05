@@ -6,8 +6,15 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-source _common.sh
+source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
+
+#=================================================
+# MANAGE SCRIPT FAILURE
+#=================================================
+
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
 
 #=================================================
 # LOAD SETTINGS
@@ -15,49 +22,41 @@ source /usr/share/yunohost/helpers
 
 app=$YNH_APP_INSTANCE_NAME
 
-domain=$(ynh_app_setting_get "$app" domain)
 final_path=$(ynh_app_setting_get "$app" final_path)
-db_user=$app
-db_name=$app
+domain=$(ynh_app_setting_get "$app" domain)
+db_name=$(ynh_app_setting_get "$app" db_name)
 
 #=================================================
-# STANDARD REMOVE
+# STANDARD BACKUP STEPS
 #=================================================
-# REMOVE UWSGI
-#=================================================
-
-ynh_remove_uwsgi_service
-
-#=================================================
-# REMOVE DEPENDENCIES
+# BACKUP THE APP MAIN DIR
 #=================================================
 
-# Remove metapackage and its dependencies
-ynh_remove_app_dependencies
+ynh_backup "$final_path"
 
 #=================================================
-# REMOVE THE MYSQL DATABASE
+# BACKUP THE NGINX CONFIGURATION
 #=================================================
 
-ynh_mysql_remove_db "$db_user" "$db_name"
+ynh_backup "/etc/nginx/conf.d/$domain.d/$app.conf"
 
 #=================================================
-# REMOVE APP MAIN DIR
+# BACKUP THE MYSQL DATABASE
 #=================================================
 
-ynh_secure_remove "$final_path"
+ynh_mysql_dump_db "$db_name" > db.sql
 
 #=================================================
-# REMOVE NGINX CONFIGURATION
+# SPECIFIC BACKUP
+#=================================================
+# Backup Log
 #=================================================
 
-ynh_remove_nginx_config
+ynh_backup "/var/log/uwsgi/$app"
 
 #=================================================
-# GENERIC FINALIZATION
-#=================================================
-# REMOVE DEDICATED USER
+# BACKUP THE UWSGI FILES
 #=================================================
 
-# Delete a system user
-ynh_system_user_delete "$app"
+ynh_backup "/etc/uwsgi/apps-available/$app.ini"
+ynh_backup "/etc/systemd/system/uwsgi-app@.service"

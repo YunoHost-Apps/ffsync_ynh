@@ -1,91 +1,182 @@
 #!/bin/bash
 
-# Source app helpers
-. /usr/share/yunohost/helpers
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
+source _common.sh
+source /usr/share/yunohost/helpers
+
+#=================================================
+# MANAGE SCRIPT FAILURE
+#=================================================
+
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
+
+#=================================================
+# RETRIEVE ARGUMENTS FROM THE MANIFEST
+#=================================================
+
+app=$YNH_APP_INSTANCE_NAME
 
 # Retrieve arguments
-domain=$(ynh_app_setting_get ffsync domain)
-path=$(ynh_app_setting_get ffsync path)
-db_pwd=$(ynh_app_setting_get ffsync mysqlpwd)
-db_user=ffsync
-final_path=/opt/yunohost/ffsync
+domain=$(ynh_app_setting_get "$app" domain)
+path_url=$(ynh_app_setting_get "$app" path)
+db_name=$(ynh_app_setting_get "$app" db_name)
+db_pwd=$(ynh_app_setting_get "$app" mysqlpwd)
+db_user=$app
+final_path=$(ynh_app_setting_get "$app" final_path)
+secret=$(ynh_app_setting_get "$app" secret)
 
-# Get secret variable
-secret=$(ynh_app_setting_get ffsync secret)
-# Get from conf file if not defined
-if [[ -z $secret ]]
-then
-	secret=$(sudo grep "secret =" $final_path/syncserver.ini | cut -d" " -f3)
-	ynh_app_setting_set ffsync secret $secret
+#=================================================
+# ENSURE DOWNWARD COMPATIBILITY
+#=================================================
+
+# If db_name doesn't exist, create it
+if [ -z "$db_name" ]; then
+	db_name=$(ynh_sanitize_dbid "$app")
+	ynh_app_setting_set $app db_name "$db_name"
 fi
 
-# Check Swap
-if [ $(sudo swapon -s | wc -l) = 1 ];
-then
-	# It is NOT possible to setup a swap file on a tmpfs filesystem
-	mount | grep /tmp | grep tmpfs > /dev/null 2>&1
-	if [ $? = 1 ];
-	then
-		tmp_swap_file=/tmp/ffsync_swapfile
-	else
-		tmp_swap_file=/var/cache/ffsync_swapfile
-	fi
-	sudo dd if=/dev/zero of=$tmp_swap_file bs=1M count=256
-	sudo chmod 600 $tmp_swap_file
-	sudo mkswap $tmp_swap_file
-	sudo swapon $tmp_swap_file
+# If final_path doesn't exist, create it
+if [ -z "$final_path" ]; then
+	final_path=/opt/yunohost/$app
+	ynh_app_setting_set "$app" final_path "$final_path"
 fi
 
-# Copy files to the right place
-sudo mkdir -p $final_path
-sudo cp -a ../sources/* $final_path
-sudo cp ../conf/ffsync /etc/init.d/
-sudo cp ../conf/ffsync.logrotate /etc/logrotate.d/ffsync
+# If path_url doesn't exist, create it
+if [ -z "$path_url" ]; then
+	path_url=$(ynh_app_setting_get "$app" path)
+	ynh_app_setting_set "$app" path "$path_url"
+	ynh_app_setting_delete "$app" path
+fi
 
+# Detect old installation style
+if [ -e /etc/init.d/ffsync ]; then
+	service ffsync stop
+	update-rc.d -f ffsync remove
 
-# Set permissions to ffsync directory
-sudo useradd ffsync -d $final_path
-sudo chown ffsync:ffsync -R $final_path
+	ynh_secure_remove /etc/init.d/ffsync
+	ynh_secure_remove /var/log/ffsync.log
+	ynh_secure_remove /opt/yunohost/ffsync
 
-# Modify Nginx configuration file and copy it to Nginx conf directory
-sed -i "s@PATHTOCHANGE@$path@g" ../conf/nginx.conf
-sed -i "s@ALIASTOCHANGE@$final_path@g" ../conf/nginx.conf
-sudo cp ../conf/nginx.conf /etc/nginx/conf.d/$domain.d/ffsync.conf
-sudo cp ../conf/syncserver.ini $final_path/syncserver.ini
-sudo sed -i -e "s@ynhbaseurl@$domain$path@g" $final_path/syncserver.ini
-sudo sed -i -e "s@changesecret@$secret@g" $final_path/syncserver.ini
-sudo sed -i "s/yunouser/$db_user/g" $final_path/syncserver.ini
-sudo sed -i "s/yunopass/$db_pwd/g" $final_path/syncserver.ini
-sudo sed -i "s/yunobase/$db_user/g" $final_path/syncserver.ini
-sudo sed -i -e "s@media\/img@$path\/media\/img@g" $final_path/syncserver/page/sync_files/firefox_sync-bundle.css
-sudo sed -i -e "s@media\/img@$path\/media\/img@g" $final_path/syncserver/page/sync_files/responsive-bundle.css
+	yunohost service remove "$app"
+fi
 
-# stop service before upgrade
-sudo service ffsync stop
+#=================================================
+# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
+#=================================================
 
+# Backup the current version of the app
+ynh_backup_before_upgrade
+ynh_clean_setup () {
+	# restore it if the upgrade fails
+	ynh_restore_upgradebackup
+}
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
+
+#=================================================
+# CHECK THE PATH
+#=================================================
+
+# Normalize the URL path syntax
+path_url=$(ynh_normalize_url_path "$path_url")
+
+#=================================================
+# STANDARD UPGRADE STEPS
+#=================================================
+# INSTALL DEPENDENCIES
+#=================================================
+
+# Check depends installation
+ynh_install_app_dependencies python-dev python-virtualenv \
+			 uwsgi uwsgi-plugin-python \
+			 `# ARM support: ` \
+			 build-essential libssl-dev libffi-dev
+
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+
+# Download, check integrity, uncompress and patch the source from app.src
+ynh_setup_source "$final_path"
+
+#=================================================
+# NGINX CONFIGURATION
+#=================================================
+
+# Create a dedicated nginx config
+ynh_add_nginx_config
+
+if [ "$path_url" == "/" ]
+then
+	# $finalnginxconf comes from ynh_add_nginx_config
+	# uwsgi_param is only needed for non-root installation
+	ynh_replace_string "uwsgi_param "     "#uwsgi_param "     "$finalnginxconf"
+	ynh_replace_string "uwsgi_modifier1 " "#uwsgi_modifier1 " "$finalnginxconf"
+fi
+ynh_store_file_checksum "$finalnginxconf"
+systemctl reload nginx
+
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+
+# Create a system user
+ynh_system_user_create "$app"
+
+#=================================================
+# pip installation
+#=================================================
+
+virtualenv "$final_path/local"
 # Init virtualenv
-cd $final_path && sudo make build && sudo ./local/bin/easy_install gunicorn
+(
+	set +o nounset
+	source "$final_path/local/bin/activate"
+	set -o nounset
+	cd "$final_path"
+	pip install --upgrade pip
+	pip install pyramid_chameleon
+	CFLAGS="-Wno-error -Wno-error=format-security" \
+		ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" \
+		pip install --requirement "$final_path/requirements.txt"
 
-# Disable swapfile
-if [ -z ${tmp_swap_file+x} ];
-then
-        sudo swapoff $tmp_swap_file
-        sudo rm -f $tmp_swap_file
-fi
+	python "$final_path/setup.py" develop
 
-# Fix permission
-sudo find $final_path/ -type d -exec chmod 2755 {} \;
-sudo find $final_path/ -type f -exec chmod g+r,o+r {} \;
-sudo usermod -a -G ffsync www-data
+	touch "$final_path/local/COMPLETE"
+)
 
-#enable services
-sudo chmod +x /etc/init.d/ffsync
-sudo update-rc.d ffsync defaults
-sudo service ffsync restart
-sudo service ffsync restart
-sudo service ffsync restart
+# Add nice homepage
+cp -r ../sources/page $final_path/syncserver/
+(cd "$final_path/syncserver" && patch -p1 < $YNH_CWD/../sources/homepage.patch) || echo "Unable to apply patches"
 
-# Reload Nginx and regenerate SSOwat conf
-sudo service nginx reload
-ynh_app_setting_set ffsync skipped_uris "/"
-sudo yunohost app ssowatconf
+#=================================================
+# SECURE FILES AND DIRECTORIES
+#=================================================
+
+chown $app -R $final_path
+chmod u=rwX,g=rX,o= -R $final_path
+
+#=================================================
+# SETUP UWSGI
+#=================================================
+
+# create config file syncserver.ini
+rm "$final_path/syncserver.ini"
+ln -s "/etc/uwsgi/apps-available/$app.ini" "$final_path/syncserver.ini"
+
+# configure uwsgi
+ynh_add_uwsgi_service 'domain secret db_user db_pwd db_name'
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# SETUP SSOWAT
+#=================================================
+
+ynh_app_setting_set "$app" skipped_uris "/"

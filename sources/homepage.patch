@@ -1,0 +1,48 @@
+diff -Naur a/__init__.py b/__init__.py
+--- a/__init__.py 2018-08-22 17:54:00.369070610 +0200
++++ b/__init__.py 2018-08-22 20:11:39.861463512 +0200
+@@ -11,6 +11,10 @@
+ from pyramid.response import Response
+ from pyramid.events import NewRequest, subscriber
+ 
++from pyramid.static import static_view
++from pyramid.view import view_config
++from pyramid.renderers import render, render_to_response
++
+ try:
+     import requests.packages.urllib3.contrib.pyopenssl
+     HAS_PYOPENSSL = True
+@@ -135,13 +139,27 @@
+     config.scan("syncserver", ignore=["syncserver.wsgi_app"])
+     config.include("syncstorage", route_prefix="/storage")
+     config.include("tokenserver", route_prefix="/token")
++    config.include('pyramid_chameleon')
+ 
+-    # Add a top-level "it works!" view.
+-    def itworks(request):
+-        return Response("it works!")
+-
+-    config.add_route('itworks', '/')
+-    config.add_view(itworks, route_name='itworks')
++    # Add a top-level explaination view.
++    # First view, available at http://localhost:6543/
++    def page(request):
++               result = render('page/index.pt',
++                               {'public_url':public_url},
++                               request=request)
++               response = Response(result)
++               return response
++    config.add_route('page', '/')
++    config.add_view(page, route_name='page')
++
++    www = static_view(
++        os.path.realpath(os.path.dirname(__file__)+"/page/"),
++        use_subpath=True
++    )
++    # Documentation for Hybrid routing can be found here
++    # http://docs.pylonsproject.org/projects/pyramid/en/1.0-branch/narr/hybrid.html#using-subpath-in-a-route-pattern
++    config.add_route('index', '/*subpath', 'www')  # subpath is a reserved word
++    config.add_view(www, route_name='index')
+ 
+ 
+ def import_settings_from_environment_variables(settings, environ=None):

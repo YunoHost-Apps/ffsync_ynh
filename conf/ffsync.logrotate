@@ -1,9 +1,0 @@
-"/var/log/ffsync.log" {
-  copytruncate
-  daily
-  rotate 7
-  compress
-  delaycompress
-  missingok
-  notifempty
-}

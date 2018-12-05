@@ -1,0 +1,4 @@
+SOURCE_URL=https://github.com/mozilla-services/syncserver/archive/1.8.0.tar.gz
+SOURCE_SUM=728206bcffec7a305e97e7cd4d465b3fa56f39f8e1fd55d98e49a866016d61e0
+SOURCE_SUM_PRG=sha256sum
+SOURCE_FORMAT=tar.gz
