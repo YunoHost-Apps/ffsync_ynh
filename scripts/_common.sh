@@ -6,7 +6,28 @@
 ynh_check_global_uwsgi_config () {
 	uwsgi --version || ynh_die "You need to add uwsgi (and appropriate plugin) as a dependency"
 
-	cp ../conf/uwsgi-app@.service /etc/systemd/system/uwsgi-app@.service
+	cat >> /etc/systemd/system/uwsgi-app@.service <<EOF
+[Unit]
+Description=%i uWSGI app
+After=syslog.target
+
+[Service]
+RuntimeDirectory=%i
+ExecStart=/usr/bin/uwsgi \
+        --ini /etc/uwsgi/apps-available/%i.ini \
+        --socket /var/run/%i/app.socket \
+        --logto /var/log/uwsgi/%i/%i.log
+User=%i
+Group=www-data
+Restart=on-failure
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
+EOF
 
 	systemctl daemon-reload
 }
@@ -25,6 +46,9 @@ ynh_check_global_uwsgi_config () {
 #  And dynamic variables (from the last example) :
 #   __PATH_2__    by $path_2
 #   __PORT_2__    by $port_2
+#
+# To be able to customise the settings of the systemd unit you can override the rules with the file "conf/uwsgi-app@override.service".
+# This file will be automatically placed on the good place
 #
 # usage: ynh_add_uwsgi_service
 #
@@ -70,6 +94,11 @@ ynh_add_uwsgi_service () {
 	chown $app:root /var/log/uwsgi/$app
 	chmod -R u=rwX,g=rX,o= /var/log/uwsgi/$app
 
+	# Setup specific Systemd rules if necessary
+	test -e ../conf/uwsgi-app@override.service && \
+		mkdir /etc/systemd/system/uwsgi-app@$app.service.d && \
+		cp ../conf/uwsgi-app@override.service /etc/systemd/system/uwsgi-app@$app.service.d/override.conf
+
 	systemctl daemon-reload
 	systemctl stop "uwsgi-app@$app.service"
 	systemctl enable "uwsgi-app@$app.service"
@@ -91,5 +120,6 @@ ynh_remove_uwsgi_service () {
 
 		ynh_secure_remove "$finaluwsgiini"
 		ynh_secure_remove "/var/log/uwsgi/$app"
+		ynh_secure_remove "/etc/systemd/system/uwsgi-app@$app.service.d"
 	fi
 }
