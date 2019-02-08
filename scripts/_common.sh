@@ -100,7 +100,7 @@ ynh_add_uwsgi_service () {
 		cp ../conf/uwsgi-app@override.service /etc/systemd/system/uwsgi-app@$app.service.d/override.conf
 
 	systemctl daemon-reload
-	systemctl stop "uwsgi-app@$app.service"
+	systemctl stop "uwsgi-app@$app.service" || true
 	systemctl enable "uwsgi-app@$app.service"
 	systemctl start "uwsgi-app@$app.service"
 
