@@ -6,7 +6,7 @@
 ynh_check_global_uwsgi_config () {
 	uwsgi --version || ynh_die "You need to add uwsgi (and appropriate plugin) as a dependency"
 
-	cat >> /etc/systemd/system/uwsgi-app@.service <<EOF
+	cat > /etc/systemd/system/uwsgi-app@.service <<EOF
 [Unit]
 Description=%i uWSGI app
 After=syslog.target
