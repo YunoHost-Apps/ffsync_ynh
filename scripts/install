@@ -114,7 +114,7 @@ ynh_system_user_create "$app" "$final_path"
 # pip installation
 #=================================================
 
-virtualenv "$final_path/local"
+virtualenv --python=$(which python2 python | head -n 1) "$final_path/local"
 # Init virtualenv
 (
 	set +o nounset
@@ -122,10 +122,10 @@ virtualenv "$final_path/local"
 	set -o nounset
 	cd "$final_path"
 	pip install --upgrade pip
-	pip install pyramid_chameleon
+	pip install --upgrade pyramid_chameleon
 	CFLAGS="-Wno-error -Wno-error=format-security" \
 		ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" \
-		pip install --requirement "$final_path/requirements.txt"
+		pip install --upgrade --requirement "$final_path/requirements.txt"
 
 	python "$final_path/setup.py" develop
 
