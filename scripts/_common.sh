@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Note that we also need some specific dependances for build with arm architectures
+dependances="python-dev python-virtualenv virtualenv uwsgi uwsgi-plugin-python build-essential libssl-dev libffi-dev"
+
 # Check if system wide templates are available and correcly configured
 #
 # usage: ynh_check_global_uwsgi_config
