@@ -13,6 +13,6 @@ Once installed, reaching `http://domain.tld/path` should show a page explaining 
 ## Links
 
  * Report a bug about this package: https://github.com/YunoHost-Apps/ffsync_ynh
- * Report a bug about Funkwhale itself: https://github.com/mozilla-services/syncserver
+ * Report a bug about firefox sync itself: https://github.com/mozilla-services/syncserver
  * Documentation: https://docs.services.mozilla.com/howtos/run-sync-1.5.html
  * YunoHost website: https://yunohost.org/
