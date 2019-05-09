@@ -71,10 +71,7 @@ chmod u=rwX,g=rX,o= -R $final_path
 # REINSTALL DEPENDENCIES
 #=================================================
 
-ynh_install_app_dependencies python-dev python-virtualenv \
-			 uwsgi uwsgi-plugin-python \
-			 `# ARM support: ` \
-			 build-essential libssl-dev libffi-dev
+ynh_install_app_dependencies $dependances
 
 # set authorizations
 chown $app:root /var/log/uwsgi/$app

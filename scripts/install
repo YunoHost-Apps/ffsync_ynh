@@ -58,10 +58,7 @@ ynh_webpath_register "$app" "$domain" "$path_url"
 #=================================================
 
 # Check depends installation
-ynh_install_app_dependencies python-dev python-virtualenv \
-			 uwsgi uwsgi-plugin-python \
-			 `# ARM support: ` \
-			 build-essential libssl-dev libffi-dev
+ynh_install_app_dependencies $dependances
 
 #=================================================
 # CREATE A MYSQL DATABASE
