@@ -3,163 +3,88 @@
 #=================================================
 # GENERIC START
 #=================================================
+
 # IMPORT GENERIC HELPERS
-#=================================================
-
-source _common.sh
 source /usr/share/yunohost/helpers
-
-#=================================================
-# MANAGE SCRIPT FAILURE
-#=================================================
 
 # Exit if an error occurs during the execution of the script
 ynh_abort_if_errors
 
-#=================================================
-# RETRIEVE ARGUMENTS FROM THE MANIFEST
-#=================================================
+# Import common cmd
+source ./experimental_helper.sh
+source ./_common.sh
+
+ynh_script_progression --message="Validating installation parameters..."
 
 # Retrieve arguments
 domain=$YNH_APP_ARG_DOMAIN
-path_url=$YNH_APP_ARG_PATH
-
+path_url=$(ynh_normalize_url_path --path_url $YNH_APP_ARG_PATH)
 app=$YNH_APP_INSTANCE_NAME
 final_path="/opt/yunohost/$app"
 
-# Normalize the url path syntax
-path_url=$(ynh_normalize_url_path "$path_url")
+# Generate random password and save
+secret=$(ynh_string_random)
 
-#=================================================
 # STORE SETTINGS FROM MANIFEST
-#=================================================
-
-ynh_app_setting_set "$app" final_path "$final_path"
-
-#=================================================
-# CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
-#=================================================
+ynh_app_setting_set --app $app --key final_path --value "$final_path"
+ynh_app_setting_set --app $app --key secret --value "$secret"
 
 # Check destination directory
-test ! -e "$final_path" || ynh_die "This path already contains a folder"
+test ! -e "$final_path" || ynh_die --message "This path already contains a folder"
 
-# Check web path availability
-ynh_webpath_available "$domain" "$path_url"
 # Register (book) web path
-ynh_webpath_register "$app" "$domain" "$path_url"
+ynh_webpath_register --app $app --domain $domain --path_url $path_url
 
 #=================================================
 # STANDARD MODIFICATIONS
 #=================================================
 
-
-#=================================================
 # INSTALL DEPENDENCIES
-#=================================================
-
-# Check depends installation
+ynh_script_progression --message="Installing dependencies..." --weight=7
 ynh_install_app_dependencies $dependances
 
-#=================================================
 # CREATE A MYSQL DATABASE
-#=================================================
-
-# Use 'FSyncMS' as database name and user
+ynh_script_progression --message="Configuring MySQL database..."
 db_user=$app
-db_name=$(ynh_sanitize_dbid $app)
+db_name=$(ynh_sanitize_dbid --db_name $app)
+ynh_app_setting_set --app $app --key db_name --value "$db_name"
+ynh_mysql_setup_db --db_user "$db_user" --db_name "$db_name"
 
-ynh_app_setting_set "$app" db_name "$db_name"
-ynh_mysql_setup_db "$db_user" "$db_name"
-
-#=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
-#=================================================
-
-# Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source "$final_path"
+ynh_script_progression --message="Installing sources files..." --weight=10
+install_sources
 
 # Modify assets to take path into account
 # TODO: try to include this as a patch if still needed
 # find ../sources/syncserver/page/sync_files/ -type f -exec sed -i -e "s@media\/img@$path_url\/media\/img@g" {} \;
 
-#=================================================
 # NGINX CONFIGURATION
-#=================================================
-
-# Modify Nginx configuration file and copy it to Nginx conf directory
+ynh_script_progression --message="Configuring nginx"
 ynh_add_nginx_config
 
 if [ "$path_url" == "/" ]
 then
 	# $finalnginxconf comes from ynh_add_nginx_config
 	# uwsgi_param is only needed for non-root installation
-	ynh_replace_string "uwsgi_param "     "#uwsgi_param "     "$finalnginxconf"
-	ynh_replace_string "uwsgi_modifier1 " "#uwsgi_modifier1 " "$finalnginxconf"
+	ynh_replace_string --match_string "uwsgi_param " --replace_string "#uwsgi_param " --target_file "$finalnginxconf"
+	ynh_replace_string --match_string "uwsgi_modifier1 " --replace_string "#uwsgi_modifier1 " --target_file "$finalnginxconf"
 fi
-ynh_store_file_checksum "$finalnginxconf"
+ynh_store_file_checksum --file "$finalnginxconf"
 systemctl reload nginx
 
-#=================================================
 # CREATE DEDICATED USER
-#=================================================
-
-ynh_system_user_create "$app" "$final_path"
-
-#=================================================
-# SPECIFIC SETUP
-#=================================================
-# pip installation
-#=================================================
-
-virtualenv --python=$(which python2 python | head -n 1) "$final_path/local"
-# Init virtualenv
-(
-	set +o nounset
-	source "$final_path/local/bin/activate"
-	set -o nounset
-	cd "$final_path"
-	pip install --upgrade pip
-	pip install --upgrade pyramid_chameleon
-	CFLAGS="-Wno-error -Wno-error=format-security" \
-		ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" \
-		pip install --upgrade --requirement "$final_path/requirements.txt"
-
-	python "$final_path/setup.py" develop
-
-	touch "$final_path/local/COMPLETE"
-)
-
-# Add nice homepage
-cp -r ../sources/page $final_path/syncserver/
-(cd "$final_path/syncserver" && patch -p1 < $YNH_CWD/../sources/homepage.patch) || echo "Unable to apply patches"
-
-#=================================================
-# SECURE FILES AND DIRECTORIES
-#=================================================
-
-chown $app -R $final_path
-chmod u=rwX,g=rX,o= -R $final_path
-
-
-#=================================================
-# SETUP UWSGI
-#=================================================
-
-# Generate random password and save
-secret=$(ynh_string_random)
-ynh_app_setting_set "$app" secret "$secret"
+ynh_script_progression --message="Configuring system user..."
+ynh_system_user_create --username "$app" --home_dir "$final_path"
 
 # create config file syncserver.ini
+ynh_script_progression --message="Configuring application..."
 rm "$final_path/syncserver.ini"
 ln -s "/etc/uwsgi/apps-available/$app.ini" "$final_path/syncserver.ini"
 
 # configure uwsgi
 ynh_add_uwsgi_service 'domain secret db_user db_pwd db_name'
 
-#=================================================
 # MODIFY A CONFIG FILE
-#=================================================
-
 # TODO: fix this css patch
 # ynh_replace_string "media\/img@$path_url\/media\/img@g" $final_path/syncserver/page/sync_files/firefox_sync-bundle.css
 # ynh_replace_string "media\/img@$path_url\/media\/img@g" $final_path/syncserver/page/sync_files/responsive-bundle.css
@@ -167,8 +92,14 @@ ynh_add_uwsgi_service 'domain secret db_user db_pwd db_name'
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
-# SETUP SSOWAT
-#=================================================
 
+# SECURE FILES AND DIRECTORIES
+ynh_script_progression --message="Protecting directory"
+set_permissions
+
+# SETUP SSOWAT
 # accessible by everyone (authentification is done by firefox accounts)
-ynh_app_setting_set "$app" skipped_uris "/"
+ynh_script_progression --message="Configuring permissions"
+ynh_app_setting_set --app $app --key skipped_uris --value "/"
+
+ynh_script_progression --message="Installation of $app completed" --last

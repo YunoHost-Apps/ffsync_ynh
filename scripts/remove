@@ -3,61 +3,50 @@
 #=================================================
 # GENERIC START
 #=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
 
-source _common.sh
+# Source YunoHost helpers
 source /usr/share/yunohost/helpers
 
-#=================================================
+# Stop script if errors
+set -u
+
+# Import common cmd
+source ./experimental_helper.sh
+source ./_common.sh
+
 # LOAD SETTINGS
-#=================================================
-
-app=$YNH_APP_INSTANCE_NAME
-
-domain=$(ynh_app_setting_get "$app" domain)
-final_path=$(ynh_app_setting_get "$app" final_path)
+ynh_script_progression --message="Loading installation settings..."
+domain=$(ynh_app_setting_get --app $app --key domain)
+final_path=$(ynh_app_setting_get --app $app --key final_path)
 db_user=$app
 db_name=$app
 
 #=================================================
 # STANDARD REMOVE
 #=================================================
-# REMOVE UWSGI
-#=================================================
 
+# REMOVE UWSGI
+ynh_script_progression --message="Removing configuration..."
 ynh_remove_uwsgi_service
 
-#=================================================
 # REMOVE DEPENDENCIES
-#=================================================
-
-# Remove metapackage and its dependencies
+ynh_script_progression --message="Removing dependencies" --weight=10
 ynh_remove_app_dependencies
 
-#=================================================
 # REMOVE THE MYSQL DATABASE
-#=================================================
+ynh_script_progression --message="Removing databases..."
+ynh_mysql_remove_db --db_user "$db_user" --db_name "$db_name"
 
-ynh_mysql_remove_db "$db_user" "$db_name"
-
-#=================================================
 # REMOVE APP MAIN DIR
-#=================================================
+ynh_script_progression --message="Backing up the main app directory..."
+ynh_secure_remove --file="$final_path"
 
-ynh_secure_remove "$final_path"
-
-#=================================================
 # REMOVE NGINX CONFIGURATION
-#=================================================
-
+ynh_script_progression --message="Removing nginx configuration"
 ynh_remove_nginx_config
 
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# REMOVE DEDICATED USER
-#=================================================
-
 # Delete a system user
-ynh_system_user_delete "$app"
+ynh_script_progression --message="Removing user..."
+ynh_system_user_delete --username "$app"
+
+ynh_script_progression --message="Removal of $app completed" --last
