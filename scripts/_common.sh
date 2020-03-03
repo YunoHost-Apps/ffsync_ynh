@@ -20,6 +20,7 @@ install_sources() {
         cd "$final_path"
         pip install --upgrade pip
         pip install --upgrade pyramid_chameleon
+        pip install soupsieve==1.9.5
         CFLAGS="-Wno-error -Wno-error=format-security" \
             ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" \
             pip install --upgrade --requirement "$final_path/requirements.txt"
