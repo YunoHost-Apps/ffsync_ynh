@@ -1,13 +1,14 @@
 {
     "name": "Firefox Sync Server",
     "id": "ffsync",
-    "version": "1.8.0~ynh1",
-    "url": "https://github.com/mozilla-services/syncserver",
     "packaging_format": 1,
     "description": {
         "en": "Mozilla’s Sync-Server to host your Firefox account data",
         "fr": "Le serveur de synchronisation de Mozilla, pour héberger vos données Firefox"
     },
+    "version": "1.8.0~ynh1",
+    "url": "https://github.com/mozilla-services/syncserver",
+	"license": "MPL-2.0",
     "maintainer": {
         "name": "Josué Tille",
         "email": "josue@tille.ch"
@@ -20,13 +21,12 @@
         "email": "jean-baptiste@holcroft.fr"
     }],
     "requirements": {
-        "yunohost": ">=3.0.0"
+        "yunohost": ">= 3.5"
 	},
-	"license": "MPL-2.0",
+    "multi_instance": true,
 	"services": [
         "nginx"
 	],
-    "multi_instance": true,
     "arguments": {
         "install" : [
             {

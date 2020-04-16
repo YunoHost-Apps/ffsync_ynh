@@ -1,11 +1,17 @@
+#!/bin/bash
+
 #=================================================
-# SET ALL CONSTANTS
+# COMMON VARIABLES
 #=================================================
 
-app=$YNH_APP_INSTANCE_NAME
 
-# Note that we also need some specific dependances for build with arm architectures
-dependances="python-dev python-virtualenv virtualenv uwsgi uwsgi-plugin-python build-essential libssl-dev libffi-dev"
+# Note that we also need some specific pkg_dependencies for build with arm architectures
+# dependencies used by the app
+pkg_dependencies="python-dev python-virtualenv virtualenv uwsgi uwsgi-plugin-python build-essential libssl-dev libffi-dev"
+
+#=================================================
+# PERSONAL HELPERS
+#=================================================
 
 install_sources() {
     ynh_setup_source --dest_dir "$final_path"
@@ -39,3 +45,11 @@ set_permissions() {
     chown $app:root /var/log/uwsgi/$app
     chmod -R u=rwX,g=rX,o= /var/log/uwsgi/$app
 }
+
+#=================================================
+# EXPERIMENTAL HELPERS
+#=================================================
+
+#=================================================
+# FUTURE OFFICIAL HELPERS
+#=================================================

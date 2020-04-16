@@ -3,46 +3,56 @@
 #=================================================
 # GENERIC START
 #=================================================
-
 # IMPORT GENERIC HELPERS
-source /usr/share/yunohost/helpers
+#=================================================
 
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-# Import common cmd
 source ./experimental_helper.sh
 source ./_common.sh
+source /usr/share/yunohost/helpers
 
+#=================================================
 # LOAD SETTINGS
+#=================================================
 ynh_script_progression --message="Loading installation settings..."
-domain=$(ynh_app_setting_get --app $app --key domain)
-path_url=$(ynh_app_setting_get --app $app --key path)
-db_name=$(ynh_app_setting_get --app $app --key db_name)
-db_pwd=$(ynh_app_setting_get --app $app --key mysqlpwd)
-db_user=$app
-final_path=$(ynh_app_setting_get --app $app --key final_path)
-secret=$(ynh_app_setting_get --app $app --key secret)
-path_url=$(ynh_normalize_url_path "$path_url")
 
+app=$YNH_APP_INSTANCE_NAME
+
+domain=$(ynh_app_setting_get --app=$app --key=domain)
+path_url=$(ynh_app_setting_get --app=$app --key=path)
+final_path=$(ynh_app_setting_get --app $app --key=final_path)
+db_name=$(ynh_app_setting_get --app=$app --key=db_name)
+secret=$(ynh_app_setting_get --app $app --key=secret)
+db_pwd=$(ynh_app_setting_get --app=$app --key mysqlpwd)
+db_user=$app
+
+#=================================================
+# CHECK VERSION
+#=================================================
+ynh_print_info --message="Checking version..."
+
+upgrade_type=$(ynh_check_app_version_changed)
+
+#=================================================
+# ENSURE DOWNWARD COMPATIBILITY
+#=================================================
 ynh_script_progression --message="Checking backware compatibility..." --weight=10
 
 # If db_name doesn't exist, create it
 if [ -z "$db_name" ]; then
-	db_name=$(ynh_sanitize_dbid "$app")
-	ynh_app_setting_set --app $app --key db_name --value "$db_name"
+	db_name=$(ynh_sanitize_dbid --db_name=$app)
+	ynh_app_setting_set --app=$app --key=db_name --value=$db_name
 fi
 
 # If final_path doesn't exist, create it
 if [ -z "$final_path" ]; then
 	final_path=/opt/yunohost/$app
-	ynh_app_setting_set --app $app --key final_path --value "$final_path"
+	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 fi
 
 # If path_url doesn't exist, create it
 if [ -z "$path_url" ]; then
-	path_url=$(ynh_app_setting_get --app $app --key path)
-	ynh_app_setting_set --app $app --key path --value "$path_url"
+	path_url=$(ynh_app_setting_get --app=$app --key=path)
+	ynh_app_setting_set --app=$app --key=path --value="$path_url"
 	ynh_app_setting_delete "$app" path
 fi
 
@@ -58,27 +68,42 @@ if [ -e /etc/init.d/ffsync ]; then
 	yunohost service remove "$app"
 fi
 
-# Backup the current version of the ap
+#=================================================
+# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
+#=================================================
 ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=10
+
+# Backup the current version of the app
 ynh_backup_before_upgrade
 ynh_clean_setup () {
 	# restore it if the upgrade fails
 	ynh_restore_upgradebackup
 }
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
 
 #=================================================
 # STANDARD UPGRADE STEPS
 #=================================================
 
-# Check depends installation
+
+#=================================================
+# UPGRADE DEPENDENCIES
+#=================================================
 ynh_script_progression --message="Upgrading dependencies..."
-ynh_install_app_dependencies $dependances
+ynh_install_app_dependencies $pkg_dependencies
+
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
 
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_script_progression --message="Upgrading source files..." --weight=6
 install_sources
 
+#=================================================
 # NGINX CONFIGURATION
+#=================================================
 ynh_script_progression --message="Configuring nginx..."
 ynh_add_nginx_config
 
@@ -92,11 +117,18 @@ fi
 ynh_store_file_checksum --file "$finalnginxconf"
 systemctl reload nginx
 
-# Create a system user
-ynh_system_user_create "$app"
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
 
+ynh_system_user_create --username="$app"
+
+#=================================================
+# SPECIFIC UPGRADE
+#=================================================
 # SETUP UWSGI
 ynh_script_progression --message="Configuring application..."
+
 # create config file syncserver.ini
 rm "$final_path/syncserver.ini"
 ln -s "/etc/uwsgi/apps-available/$app.ini" "$final_path/syncserver.ini"
@@ -107,12 +139,21 @@ ynh_add_uwsgi_service 'domain secret db_user db_pwd db_name'
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
-
 # SECURE FILES AND DIRECTORIES
-ynh_script_progression --message="Protecting directory..."
+#=================================================
+ynh_script_progression --message="Securing files and directories..."
+
+# Set permissions on app files
 set_permissions
 
+#=================================================
 # SETUP SSOWAT
-ynh_app_setting_set --app $app --key skipped_uris --value "/"
+#=================================================
+
+ynh_app_setting_set --app=$app --key=skipped_uris --value="/"
+
+#=================================================
+# END OF SCRIPT
+#=================================================
 
 ynh_script_progression --message="Upgrade of $app completed" --last
