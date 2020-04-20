@@ -64,12 +64,15 @@ set_permissions
 # REINSTALL DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Reinstalling dependencies..." --weight=5
+
+# Define and install dependencies
 ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # RESTORE THE MYSQL DATABASE
 #=================================================
 ynh_script_progression --message="Restoring database..." --weight=3
+
 db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
 ynh_mysql_setup_db --db_user=$db_user --db_name=$db_name --db_pwd=$db_pwd
 ynh_mysql_connect_as --user=$db_user --password=$db_pwd --database=$db_name < ./db.sql
@@ -77,12 +80,14 @@ ynh_mysql_connect_as --user=$db_user --password=$db_pwd --database=$db_name < ./
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
+
 yunohost service add "uwsgi-app@$app.service" --log "/var/log/uwsgi/app/$app"
 
 ynh_script_progression --message="Reloading services..." --weight=3
 
 systemctl daemon-reload
 systemctl enable "uwsgi-app@$app.service"
+
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
