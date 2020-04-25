@@ -85,7 +85,7 @@ yunohost service add "uwsgi-app@$app.service" --log "/var/log/uwsgi/app/$app"
 
 ynh_script_progression --message="Reloading services..." --weight=3
 
-systemctl daemon-reload
+ynh_check_global_uwsgi_config
 systemctl enable "uwsgi-app@$app.service"
 
 #=================================================

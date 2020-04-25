@@ -12,9 +12,7 @@ The Sync Server provides a replacement for Firefox’s default server (hosted at
 
 By default, a server set up will defer authentication to the Mozilla-hosted accounts server at [https://accounts.firefox.com](https://accounts.firefox.com). So you will still have to authenticate at Mozilla, but _the storage of your information will be done on your host_.
 
-Since no version was released since 2018, we follow now the master branch
-
-**Shipped version:** commit 33a1e42
+**Shipped version:** 1.8
 
 ## Configuration
 
