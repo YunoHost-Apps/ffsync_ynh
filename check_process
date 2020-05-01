@@ -10,11 +10,12 @@
 		setup_private=0
 		setup_public=1
 		upgrade=1
+		# 1.6.2 from 05/03/2017
 		upgrade=1	from_commit=fd6350495d5a1d864ae30e1a61e18939fdb6a428
+		# 1.5 from 15/12/2016
 		upgrade=1	from_commit=267ccc21f7b52d22bc3d5b9cd6239857b9a82aad
 		backup_restore=1
 		multi_instance=1
-		incorrect_path=1
 		port_already_use=0
 		change_url=0
 ;;; Levels
