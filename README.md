@@ -1,14 +1,12 @@
-Mozilla’s Sync Server for Yunohost
-==================================
+# Mozilla’s Sync Server for Yunohost
 
-[![Integration level](https://dash.yunohost.org/integration/ffsync.svg)](https://ci-apps.yunohost.org/ci/apps/ffsync%20%28Community%29/lastBuild/consoleFull)  
+[![Integration level](https://dash.yunohost.org/integration/ffsync.svg)](https://dash.yunohost.org/appci/app/ffsync)  
 [![Install ffsync with YunoHost](https://install-app.yunohost.org/install-with-yunohost.png)](https://install-app.yunohost.org/?app=ffsync)
 
 > *This package allow you to install ffsync quickly and simply on a YunoHost server.  
 If you don't have YunoHost, please see [here](https://yunohost.org/#/install) to know how to install and enjoy it.*
 
-Overview
---------
+## Overview
 
 The Sync Server provides a replacement for Firefox’s default server (hosted at Mozilla).
 
@@ -16,50 +14,31 @@ By default, a server set up will defer authentication to the Mozilla-hosted acco
 
 **Shipped version:** 1.8
 
-Documentation
--------------
+## Configuration
+
+Once installed, reaching `http://domain.tld/path` should show a page explaining how to configure it. Otherwise please refer to the [Yunohost page](https://yunohost.org/#/app_ffsync).
+
+## Documentation
 
  * Official documentation:  https://docs.services.mozilla.com/howtos/run-sync-1.5.html
  * YunoHost documentation: There no other documentations, feel free to contribute.
 
-YunoHost specific features
---------------------------
+## YunoHost specific features
 
-<!--Limitations
------------
+#### Supported architectures
 
-* Any known limitations.-->
-
-Additional informations
------------------------
-
-### Configuring
-
-Once installed, reaching `http://domain.tld/path` should show a page explaining how to configure it. Otherwise please refer to the [Yunohost page](https://yunohost.org/#/app_ffsync).
+* x86-64b - [![Build Status](https://ci-apps.yunohost.org/ci/logs/ffsync%20%28Apps%29.svg)](https://ci-apps.yunohost.org/ci/apps/ffsync/)
+* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/ffsync%20%28Apps%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/ffsync/)
 
 ## Links
 
  * Report a bug about this package: https://github.com/YunoHost-Apps/ffsync_ynh/issues
- * Report a bug about firefox sync itself: https://github.com/mozilla-services/syncserver
+ * Upstream app repository: https://github.com/mozilla-services/syncserver
  * YunoHost website: https://yunohost.org/
 
 ---
 
-Install
--------
-
-From command line:
-
-`sudo yunohost app install -l ffsync https://github.com/YunoHost-Apps/ffsync_ynh`
-
-Upgrade
--------
-
-From command line:
-
-`sudo yunohost app upgrade ffsync -u https://github.com/YunoHost-Apps/ffsync_ynh`
-
-Developers infos
+Developers info
 ----------------
 
 Please do your pull request to the [testing branch](https://github.com/YunoHost-Apps/ffsync_ynh/tree/testing).
@@ -70,11 +49,3 @@ sudo yunohost app install https://github.com/YunoHost-Apps/ffsync_ynh/tree/testi
 or
 sudo yunohost app upgrade ffsync -u https://github.com/YunoHost-Apps/ffsync_ynh/tree/testing --debug
 ```
-
-License
--------
-
-ffsync is published under the Mozilla Public License Version 2.0
-
-TODO
-----
