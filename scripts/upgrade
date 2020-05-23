@@ -74,9 +74,6 @@ then
 	yunohost service remove uwsgi-app@$app.service
 fi
 
-yunohost service add "uwsgi-app@$app" --log "/var/log/uwsgi/app/$app"
-
-
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================
