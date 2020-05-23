@@ -134,7 +134,7 @@ set_permissions
 #=================================================
 ynh_print_info --message="Integrating service in YunoHost..."
 
-yunohost service add "uwsgi-app@$app.service" --log "/var/log/uwsgi/app/$app"
+yunohost service add "uwsgi-app@$app" --log "/var/log/uwsgi/app/$app"
 
 
 #=================================================
