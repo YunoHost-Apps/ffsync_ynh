@@ -17,7 +17,8 @@ ExecStart=/usr/bin/uwsgi \
         --logto /var/log/uwsgi/%i/%i.log
 User=%i
 Group=www-data
-Restart=on-failure
+Restart=always
+RestartSec=10
 KillSignal=SIGQUIT
 Type=notify
 StandardError=syslog

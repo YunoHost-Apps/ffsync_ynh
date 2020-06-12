@@ -68,6 +68,12 @@ if [ -e /etc/init.d/ffsync ]; then
 	yunohost service remove "$app"
 fi
 
+# Remove old service ending with  ".service"
+if ynh_exec_warn_less yunohost service status "uwsgi-app@$app.service" >/dev/null
+then
+	yunohost service remove uwsgi-app@$app.service
+fi
+
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================

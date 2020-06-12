@@ -81,12 +81,12 @@ ynh_mysql_connect_as --user=$db_user --password=$db_pwd --database=$db_name < ./
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
 
-yunohost service add "uwsgi-app@$app.service" --log "/var/log/uwsgi/app/$app"
+yunohost service add "uwsgi-app@$app" --log "/var/log/uwsgi/app/$app"
 
 ynh_script_progression --message="Reloading services..." --weight=3
 
 ynh_check_global_uwsgi_config
-systemctl enable "uwsgi-app@$app.service"
+systemctl enable "uwsgi-app@$app"
 
 #=================================================
 # GENERIC FINALIZATION
@@ -94,7 +94,7 @@ systemctl enable "uwsgi-app@$app.service"
 # RELOAD NGINX AND UWSGI
 #=================================================
 
-systemctl start "uwsgi-app@$app.service"
+systemctl start "uwsgi-app@$app"
 systemctl reload nginx
 
 ynh_script_progression --message="Restoration completed for $app" --last
