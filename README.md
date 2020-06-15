@@ -3,6 +3,7 @@
 [![Integration level](https://dash.yunohost.org/integration/ffsync.svg)](https://dash.yunohost.org/appci/app/ffsync)  
 [![Install ffsync with YunoHost](https://install-app.yunohost.org/install-with-yunohost.png)](https://install-app.yunohost.org/?app=ffsync)
 
+*[Lire ce readme en français.](./README_fr.md)*
 > *This package allow you to install ffsync quickly and simply on a YunoHost server.  
 If you don't have YunoHost, please see [here](https://yunohost.org/#/install) to know how to install and enjoy it.*
 
@@ -14,16 +15,14 @@ By default, a server set up will defer authentication to the Mozilla-hosted acco
 
 **Shipped version:** 1.8
 
-## Configuration
-
-Once installed, reaching `http://domain.tld/path` should show a page explaining how to configure it. Otherwise please refer to the [Yunohost page](https://yunohost.org/#/app_ffsync).
-
 ## Documentation
 
  * Official documentation:  https://docs.services.mozilla.com/howtos/run-sync-1.5.html
- * YunoHost documentation: There no other documentations, feel free to contribute.
+ * YunoHost documentation: https://yunohost.org/#/app_ffsync
 
-## YunoHost specific features
+## Configuration
+
+Once installed, reaching `http://domain.tld/path` should show a page explaining how to configure it.
 
 #### Supported architectures
 
@@ -42,7 +41,6 @@ Developers info
 ----------------
 
 Please do your pull request to the [testing branch](https://github.com/YunoHost-Apps/ffsync_ynh/tree/testing).
-
 To try the testing branch, please proceed like that.
 ```
 sudo yunohost app install https://github.com/YunoHost-Apps/ffsync_ynh/tree/testing --debug
