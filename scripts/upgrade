@@ -18,7 +18,7 @@ ynh_script_progression --message="Loading installation settings..."
 app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get --app=$app --key=domain)
-path_url=$(ynh_app_setting_get --app=$app --key=path)
+path_url=$(ynh_normalize_url_path --path_url $(ynh_app_setting_get --app $app --key path))
 final_path=$(ynh_app_setting_get --app $app --key=final_path)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 secret=$(ynh_app_setting_get --app $app --key=secret)
@@ -141,6 +141,10 @@ ln -s "/etc/uwsgi/apps-available/$app.ini" "$final_path/syncserver.ini"
 
 # configure uwsgi
 ynh_add_uwsgi_service 'domain secret db_user db_pwd db_name'
+
+# Upgrade database table
+ynh_mysql_execute_as_root --sql='ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `keys_changed_at` BIGINT NULL AFTER `replaced_at`;' --database=$db_name
+ynh_mysql_execute_as_root --sql='ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `node` VARCHAR(255) NULL AFTER `keys_changed_at`;' --database=$db_name
 
 #=================================================
 # GENERIC FINALIZATION
