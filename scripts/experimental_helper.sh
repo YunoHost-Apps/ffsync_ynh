@@ -13,7 +13,7 @@ After=syslog.target
 RuntimeDirectory=%i
 ExecStart=/usr/bin/uwsgi \
         --ini /etc/uwsgi/apps-available/%i.ini \
-        --socket /var/run/%i/app.socket \
+        --socket /run/%i/app.socket \
         --logto /var/log/uwsgi/%i/%i.log
 User=%i
 Group=www-data
