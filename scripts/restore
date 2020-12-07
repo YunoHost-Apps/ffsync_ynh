@@ -94,7 +94,9 @@ systemctl enable "uwsgi-app@$app" --quiet
 # RELOAD NGINX AND UWSGI
 #=================================================
 
-systemctl start "uwsgi-app@$app"
-systemctl reload nginx
+ynh_script_progression --message="Starting pgadmin services..." --weight=3
+ynh_systemd_action --service_name "uwsgi-app@$app.service" \
+    --line_match "WSGI app 0 \(mountpoint='[/[:alnum:]_-]*'\) ready in [[:digit:]]* seconds on interpreter" --log_path "/var/log/uwsgi/$app/$app.log"
+ynh_systemd_action --service_name=nginx --action=reload
 
 ynh_script_progression --message="Restoration completed for $app" --last

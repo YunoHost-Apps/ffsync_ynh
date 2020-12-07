@@ -110,18 +110,16 @@ install_sources
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring nginx..."
-ynh_add_nginx_config
-
+ynh_script_progression --message="Configuring nginx"
 if [ "$path_url" == "/" ]
 then
 	# $finalnginxconf comes from ynh_add_nginx_config
 	# uwsgi_param is only needed for non-root installation
-	ynh_replace_string "uwsgi_param "     "#uwsgi_param "     "$finalnginxconf"
-	ynh_replace_string "uwsgi_modifier1 " "#uwsgi_modifier1 " "$finalnginxconf"
+	is_subpath="# "
+else
+	is_subpath=" "
 fi
-ynh_store_file_checksum --file "$finalnginxconf"
-systemctl reload nginx
+ynh_add_nginx_config 'is_subpath'
 
 #=================================================
 # CREATE DEDICATED USER
@@ -161,6 +159,10 @@ set_permissions
 #=================================================
 
 ynh_app_setting_set --app=$app --key=skipped_uris --value="/"
+
+ynh_script_progression --message="Restarting $app services..." --weight=3
+ynh_systemd_action --service_name "uwsgi-app@$app.service" \
+    --line_match "WSGI app 0 \(mountpoint='[/[:alnum:]_-]*'\) ready in [[:digit:]]* seconds on interpreter" --log_path "/var/log/uwsgi/$app/$app.log"
 
 #=================================================
 # END OF SCRIPT
