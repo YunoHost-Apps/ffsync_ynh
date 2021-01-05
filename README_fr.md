@@ -1,7 +1,7 @@
 # Serveur de synchronisation de Firefox pour Yunohost
 
 [![Integration level](https://dash.yunohost.org/integration/ffsync.svg)](https://dash.yunohost.org/appci/app/ffsync)  
-[![Install ffsync with YunoHost](https://install-app.yunohost.org/install-with-yunohost.png)](https://install-app.yunohost.org/?app=ffsync)
+[![Install ffsync with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=ffsync)
 
 *[Read this readme in english.](./README.md)*
 > *Ce package vous permet d'installer ffsync rapidement et simplement sur un serveur Yunohost.   

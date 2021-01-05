@@ -1,7 +1,7 @@
 # Mozilla’s Sync Server for Yunohost
 
 [![Integration level](https://dash.yunohost.org/integration/ffsync.svg)](https://dash.yunohost.org/appci/app/ffsync) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.maintain.svg)  
-[![Install ffsync with YunoHost](https://install-app.yunohost.org/install-with-yunohost.png)](https://install-app.yunohost.org/?app=ffsync)
+[![Install ffsync with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=ffsync)
 
 *[Lire ce readme en français.](./README_fr.md)*
 > *This package allow you to install ffsync quickly and simply on a YunoHost server.  
@@ -46,4 +46,24 @@ To try the testing branch, please proceed like that.
 sudo yunohost app install https://github.com/YunoHost-Apps/ffsync_ynh/tree/testing --debug
 or
 sudo yunohost app upgrade ffsync -u https://github.com/YunoHost-Apps/ffsync_ynh/tree/testing --debug
+```
+
+### Solving problems with Android
+
+The sure-fire way to know what Sync on Android is really doing is to observe the Android device log using adb logcat. You’ll want to bump your log-level:
+```
+adb shell setprop log.tag.FxAccounts VERBOSE
+```
+
+Then, you can observe the log using:
+```
+adb logcat | grep FxAccounts
+```
+
+It’s best to observe the log while you force a sync from the Android Settings App. You should see output like:
+
+```
+D FxAccounts(...) fennec :: BaseResource :: HTTP GET https://token.stage.mozaws.net/1.0/sync/1.5
+...
+D FxAccounts(...) fennec :: BaseResource :: HTTP GET https://sync-4-us-east-1.stage.mozaws.net/
 ```
