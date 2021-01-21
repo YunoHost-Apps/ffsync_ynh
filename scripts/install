@@ -111,6 +111,13 @@ ln -s "/etc/uwsgi/apps-available/$app.ini" "$final_path/syncserver.ini"
 ynh_add_uwsgi_service 'domain secret db_user db_pwd db_name'
 
 #=================================================
+# INTEGRATE SERVICE IN YUNOHOST
+#=================================================
+ynh_script_progression --message="Integrating service in YunoHost..."--weight=1
+
+yunohost service add "uwsgi-app@$app" --log "/var/log/uwsgi/$app/$app.log"
+
+#=================================================
 # MODIFY A CONFIG FILE
 #=================================================
 # TODO: fix this css patch

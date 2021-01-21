@@ -1,4 +1,4 @@
-# Mozilla’s Sync Server for Yunohost
+# Mozilla’s Sync Server for YunoHost
 
 [![Integration level](https://dash.yunohost.org/integration/ffsync.svg)](https://dash.yunohost.org/appci/app/ffsync) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.maintain.svg)  
 [![Install ffsync with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=ffsync)
@@ -17,7 +17,7 @@ By default, a server set up will defer authentication to the Mozilla-hosted acco
 
 ## Documentation
 
- * Official documentation:  https://docs.services.mozilla.com/howtos/run-sync-1.5.html
+ * Official documentation: https://mozilla-services.readthedocs.io/en/latest/howtos/run-sync-1.5.html
  * YunoHost documentation: https://yunohost.org/#/app_ffsync
 
 ## Configuration
@@ -37,8 +37,7 @@ Once installed, reaching `http://domain.tld/path` should show a page explaining 
 
 ---
 
-Developers info
-----------------
+## Developers info
 
 Please do your pull request to the [testing branch](https://github.com/YunoHost-Apps/ffsync_ynh/tree/testing).
 To try the testing branch, please proceed like that.

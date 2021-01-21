@@ -1,6 +1,6 @@
-# Serveur de synchronisation de Firefox pour Yunohost
+# Serveur de synchronisation de Firefox pour YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/ffsync.svg)](https://dash.yunohost.org/appci/app/ffsync)  
+[![Integration level](https://dash.yunohost.org/integration/ffsync.svg)](https://dash.yunohost.org/appci/app/ffsync) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.maintain.svg)  
 [![Install ffsync with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=ffsync)
 
 *[Read this readme in english.](./README.md)*
@@ -17,7 +17,7 @@ Par défaut, le serveur reporte l'authentification aux serveurs de comptes de Mo
 
 ## Documentation
 
- * Documentation officialle : https://docs.services.mozilla.com/howtos/run-sync-1.5.html
+ * Documentation officialle : https://mozilla-services.readthedocs.io/en/latest/howtos/run-sync-1.5.html
  * Documentation YunoHost : https://yunohost.org/#/app_ffsync
 
 ## Configuration
@@ -36,8 +36,8 @@ Une fois installé, la page `http://domain.tld/path` vous explique comment l'uti
  * Site de YunoHost : https://yunohost.org/
 
 ---
-Informations pour les développeurs
-----------------
+
+## Informations pour les développeurs
 
 Merci de faire votre « pull request » sur la [branche testing](https://github.com/YunoHost-Apps/ffsync_ynh/tree/testing).
 Pour tester la branche testing, faites comme ceci.

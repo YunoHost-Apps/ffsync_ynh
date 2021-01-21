@@ -155,6 +155,13 @@ ynh_script_progression --message="Securing files and directories..."
 set_permissions
 
 #=================================================
+# INTEGRATE SERVICE IN YUNOHOST
+#=================================================
+ynh_script_progression --message="Integrating service in YunoHost..."--weight=1
+
+yunohost service add "uwsgi-app@$app" --log "/var/log/uwsgi/$app/$app.log"
+
+#=================================================
 # SETUP SSOWAT
 #=================================================
 
