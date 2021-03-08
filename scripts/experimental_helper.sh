@@ -124,3 +124,9 @@ ynh_remove_uwsgi_service () {
         ynh_secure_remove --file="/etc/systemd/system/uwsgi-app@$app.service.d"
     fi
 }
+
+ynh_restore_uwsgi_service () {
+    ynh_check_global_uwsgi_config
+    systemctl enable "uwsgi-app@$app" --quiet
+    yunohost service add "uwsgi-app@$app" --log "/var/log/uwsgi/$app/$app.log"
+}
