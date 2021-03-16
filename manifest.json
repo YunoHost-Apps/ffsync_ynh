@@ -21,7 +21,7 @@
         "email": "jean-baptiste@holcroft.fr"
     }],
     "requirements": {
-        "yunohost": ">= 3.5"
+        "yunohost": ">= 4.1"
 	},
     "multi_instance": true,
 	"services": [
