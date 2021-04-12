@@ -155,10 +155,17 @@ ynh_script_progression --message="Securing files and directories..."
 set_permissions
 
 #=================================================
-# SETUP SSOWAT
+# Migrate legacy permissions to new system
 #=================================================
 
-ynh_app_setting_set --app=$app --key=skipped_uris --value="/"
+ynh_script_progression --message="Set permissions..."
+if ynh_legacy_permissions_exists
+then
+    ynh_legacy_permissions_delete_all
+    ynh_app_setting_delete --app=$app --key=is_public
+fi
+ynh_permission_update --permission=main --add=visitors --protected=true --show_tile=true
+
 
 ynh_script_progression --message="Restarting $app services..." --weight=3
 ynh_systemd_action --service_name "uwsgi-app@$app.service" \
