@@ -7,7 +7,7 @@
 
 # Note that we also need some specific pkg_dependencies for build with arm architectures
 # dependencies used by the app
-pkg_dependencies="python-dev python3-virtualenv virtualenv uwsgi uwsgi-plugin-python3 build-essential libssl-dev libffi-dev libmariadbclient-dev-compat"
+pkg_dependencies="python2.7 python2.7-dev python2.7-virtualenv virtualenv uwsgi uwsgi-plugin-python build-essential libssl-dev libffi-dev libmariadbclient-dev-compat"
 
 #=================================================
 # PERSONAL HELPERS
