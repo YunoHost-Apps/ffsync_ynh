@@ -42,7 +42,7 @@ install_sources() {
 set_permissions() {
     chown $app -R $final_path
     chmod u=rwX,g=rX,o= -R $final_path
-    chown $app:root /var/log/uwsgi/$app
+    chown $app:root -R /var/log/uwsgi/$app
     chmod -R u=rwX,g=rX,o= /var/log/uwsgi/$app
 }
 
