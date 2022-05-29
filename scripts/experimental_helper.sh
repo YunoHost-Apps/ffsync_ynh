@@ -7,7 +7,6 @@ ynh_check_global_uwsgi_config () {
     cat > /etc/systemd/system/uwsgi-app@.service <<EOF
 [Unit]
 Description=%i uWSGI app
-After=syslog.target
 
 [Service]
 RuntimeDirectory=%i
@@ -21,7 +20,6 @@ Restart=always
 RestartSec=10
 KillSignal=SIGQUIT
 Type=notify
-StandardError=syslog
 NotifyAccess=all
 
 [Install]
@@ -100,7 +98,7 @@ ynh_add_uwsgi_service () {
     # Setup specific Systemd rules if necessary
     test -e ../conf/uwsgi-app@override.service && \
         mkdir /etc/systemd/system/uwsgi-app@$app.service.d && \
-        cp ../conf/uwsgi-app@override.service /etc/systemd/system/uwsgi-app@$app.service.d/override.conf
+        ynh_add_config --template="uwsgi-app@override.service" --destination="/etc/systemd/system/uwsgi-app@$app.service.d/override.conf"
 
     systemctl daemon-reload
     systemctl enable "uwsgi-app@$app.service"
