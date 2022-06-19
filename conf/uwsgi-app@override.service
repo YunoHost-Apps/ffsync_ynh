@@ -1,9 +1,0 @@
-[Unit]
-After=mysql.service
-
-[Service]
-ExecStart=
-ExecStart=/opt/yunohost/__app__/local/bin/uwsgi \
-        --ini /etc/uwsgi/apps-available/%i.ini \
-        --socket /run/%i/app.socket \
-        --logto /var/log/uwsgi/%i/%i.log

@@ -7,11 +7,26 @@
 
 # Note that we also need some specific pkg_dependencies for build with arm architectures
 # dependencies used by the app
-pkg_dependencies="pypy pypy-dev python3-virtualenv uwsgi build-essential libssl-dev libffi-dev libmariadb-dev-compat"
+pkg_dependencies="pypy pypy-dev python3-virtualenv build-essential libssl-dev libffi-dev libmariadb-dev-compat"
 
 #=================================================
 # PERSONAL HELPERS
 #=================================================
+
+call_pip() {
+    # Sometime we get a segfault error while we invoke pip
+    # As we don't have a really clean way to fix this really bad error we just try many time utils it works
+    i=0
+    result_ok=false
+    while [ $i -lt 5 ] && ! $result_ok; do
+        ynh_exec_warn_less pip $@ && result_ok=true
+        i=$((i+1))
+    done
+    if ! $result_ok; then
+        echo "Error on build package"
+        false
+    fi
+}
 
 install_sources() {
     ynh_setup_source --dest_dir "$final_path"
@@ -26,13 +41,15 @@ install_sources() {
     source "$final_path/local/bin/activate"
     set -o nounset
     pushd "$final_path"
-    pip install --upgrade 'pip<20.2'
-    pip install setuptools==44.1.1
-    pip install --upgrade pyramid_chameleon 'soupsieve<2.0' uwsgi
+    call_pip install --upgrade 'pip<20.2'
+    call_pip install setuptools==44.1.1
+    call_pip install --upgrade pyramid_chameleon 'soupsieve<2.0'
     CFLAGS="-Wno-error -Wno-error=format-security" \
         ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" \
-        pip install --upgrade --requirement "$final_path/requirements.txt"
+        call_pip install --upgrade --requirement "$final_path/requirements.txt"
     pypy "$final_path/setup.py" develop
+    test -e $final_path/local/lib_pypy/_sysconfigdata.py || ln -s /usr/lib/pypy/lib_pypy/_sysconfigdata.py $final_path/local/lib_pypy/_sysconfigdata.py
+    test -e $final_path/local/lib_pypy/cffi || ln -s /usr/lib/pypy/lib_pypy/cffi $final_path/local/lib_pypy/cffi
     popd
 
     # Add nice homepage
@@ -43,8 +60,6 @@ install_sources() {
 set_permissions() {
     chown $app -R $final_path
     chmod u=rwX,g=rX,o= -R $final_path
-    chown $app:root /var/log/uwsgi/$app
-    chmod -R u=rwX,g=rX,o= /var/log/uwsgi/$app
 }
 
 #=================================================
