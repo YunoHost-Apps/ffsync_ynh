@@ -32,7 +32,7 @@ install_sources() {
     ynh_setup_source --dest_dir "$final_path"
 
     # pip installation
-    virtualenv --python=$(which pypy | head -n 1) "$final_path/local"
+    python3 -m virtualenv --python=$(which pypy | head -n 1) "$final_path/local"
     # Install manually pip v20.1 because the installed version from the system don't work any more with pyp v2.7
     cp -r ../sources/pip_20.1/. $final_path/local/site-packages/pip
 
