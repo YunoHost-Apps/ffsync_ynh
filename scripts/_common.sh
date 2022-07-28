@@ -23,13 +23,13 @@ install_sources() {
         source "$final_path/local/bin/activate"
         set -o nounset
         cd "$final_path"
-        pip install --upgrade pip
-        pip install --upgrade pyramid_chameleon 'soupsieve<2.0'
-        CFLAGS="-Wno-error -Wno-error=format-security" \
+        ynh_exec_warn_less pip install --upgrade pip
+        ynh_exec_warn_less pip install --upgrade pyramid_chameleon 'soupsieve<2.0'
+        ynh_exec_warn_less CFLAGS="-Wno-error -Wno-error=format-security" \
             ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" \
             pip install --upgrade --requirement "$final_path/requirements.txt"
 
-        python "$final_path/setup.py" develop
+        ynh_exec_warn_less python "$final_path/setup.py" develop
 
         touch "$final_path/local/COMPLETE"
     )
@@ -154,7 +154,7 @@ ynh_add_uwsgi_service () {
         cp ../conf/uwsgi-app@override.service /etc/systemd/system/uwsgi-app@$app.service.d/override.conf
 
     systemctl daemon-reload
-    systemctl enable "uwsgi-app@$app.service"
+    systemctl enable "uwsgi-app@$app.service" --quiet
 
     # Add as a service
     yunohost service add "uwsgi-app@$app" --log "/var/log/uwsgi/$app/$app.log"
@@ -168,7 +168,7 @@ ynh_remove_uwsgi_service () {
     if [ -e "$finaluwsgiini" ]; then
         yunohost service remove "uwsgi-app@$app"
         systemctl stop "uwsgi-app@$app.service"
-        systemctl disable "uwsgi-app@$app.service"
+        systemctl disable "uwsgi-app@$app.service" --quiet
 
         ynh_secure_remove --file="$finaluwsgiini"
         ynh_secure_remove --file="/var/log/uwsgi/$app"
