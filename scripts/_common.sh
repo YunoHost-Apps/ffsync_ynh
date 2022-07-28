@@ -25,9 +25,9 @@ install_sources() {
         cd "$final_path"
         ynh_exec_warn_less pip install --upgrade pip
         ynh_exec_warn_less pip install --upgrade pyramid_chameleon 'soupsieve<2.0'
-        ynh_exec_warn_less CFLAGS="-Wno-error -Wno-error=format-security" \
+        CFLAGS="-Wno-error -Wno-error=format-security" \
             ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" \
-            pip install --upgrade --requirement "$final_path/requirements.txt"
+            ynh_exec_warn_less pip install --upgrade --requirement "$final_path/requirements.txt"
 
         ynh_exec_warn_less python "$final_path/setup.py" develop
 
