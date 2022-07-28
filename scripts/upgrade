@@ -6,8 +6,7 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-source ./experimental_helper.sh
-source ./_common.sh
+source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -18,24 +17,41 @@ ynh_script_progression --message="Loading installation settings..."
 app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get --app=$app --key=domain)
-path_url=$(ynh_normalize_url_path --path_url $(ynh_app_setting_get --app $app --key path))
-final_path=$(ynh_app_setting_get --app $app --key=final_path)
+path_url=$(ynh_normalize_url_path --path_url $(ynh_app_setting_get --app=$app --key=path))
+final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
-secret=$(ynh_app_setting_get --app $app --key=secret)
-db_pwd=$(ynh_app_setting_get --app=$app --key mysqlpwd)
 db_user=$app
+db_pwd=$(ynh_app_setting_get --app=$app --key mysqlpwd)
+secret=$(ynh_app_setting_get --app $app --key=secret)
 
 #=================================================
 # CHECK VERSION
 #=================================================
-ynh_print_info --message="Checking version..."
+ynh_script_progression --message="Checking version..."
 
 upgrade_type=$(ynh_check_app_version_changed)
 
 #=================================================
+# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
+#=================================================
+ynh_script_progression --message="Backing up the app before upgrading (may take a while)..."
+
+# Backup the current version of the app
+ynh_backup_before_upgrade
+ynh_clean_setup () {
+	ynh_clean_check_starting
+	# Restore it if the upgrade fails
+	ynh_restore_upgradebackup
+}
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
+
+#=================================================
+# STANDARD UPGRADE STEPS
+#=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_script_progression --message="Checking backware compatibility..." --weight=10
+ynh_script_progression --message="Ensuring downward compatibility..." --weight=10
 
 # If db_name doesn't exist, create it
 if [ -z "$db_name" ]; then
@@ -74,43 +90,40 @@ then
 	yunohost service remove uwsgi-app@$app.service
 fi
 
-#=================================================
-# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
-#=================================================
-ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=10
-
-# Backup the current version of the app
-ynh_backup_before_upgrade
-ynh_clean_setup () {
-	# restore it if the upgrade fails
-	ynh_restore_upgradebackup
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
+if ynh_legacy_permissions_exists
+then
+    ynh_legacy_permissions_delete_all
+    ynh_app_setting_delete --app=$app --key=is_public
+fi
+ynh_permission_update --permission=main --add=visitors --protected=true --show_tile=true
 
 #=================================================
-# STANDARD UPGRADE STEPS
+# CREATE DEDICATED USER
 #=================================================
+ynh_script_progression --message="Making sure dedicated system user exists..."
 
+# Create a dedicated user (if not existing)
+ynh_system_user_create --username=$app --home_dir="$final_path"
+
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+ynh_script_progression --message="Upgrading source files..." --weight=6
+
+install_sources
 
 #=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Upgrading dependencies..."
+
 ynh_install_app_dependencies $pkg_dependencies
-
-#=================================================
-# DOWNLOAD, CHECK AND UNPACK SOURCE
-#=================================================
-
-# Download, check integrity, uncompress and patch the source from app.src
-ynh_script_progression --message="Upgrading source files..." --weight=6
-install_sources
 
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
 ynh_script_progression --message="Configuring nginx"
+
 if [ "$path_url" == "/" ]
 then
 	# $finalnginxconf comes from ynh_add_nginx_config
@@ -119,18 +132,13 @@ then
 else
 	is_subpath=" "
 fi
-ynh_add_nginx_config 'is_subpath'
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-
-ynh_system_user_create --username="$app"
+ynh_add_nginx_config
 
 #=================================================
 # SPECIFIC UPGRADE
 #=================================================
-# SETUP UWSGI
+# CONFIGURE APPLICATION
+#=================================================
 ynh_script_progression --message="Configuring application..."
 
 # create config file syncserver.ini
@@ -145,8 +153,6 @@ ynh_mysql_execute_as_root --sql='ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `k
 ynh_mysql_execute_as_root --sql='ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `node` VARCHAR(255) NULL AFTER `keys_changed_at`;' --database=$db_name
 
 #=================================================
-# GENERIC FINALIZATION
-#=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
 ynh_script_progression --message="Securing files and directories..."
@@ -155,21 +161,20 @@ ynh_script_progression --message="Securing files and directories..."
 set_permissions
 
 #=================================================
-# Migrate legacy permissions to new system
+# GENERIC FINALIZATION
 #=================================================
+# START SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Starting a systemd service..." --weight=3
 
-ynh_script_progression --message="Set permissions..."
-if ynh_legacy_permissions_exists
-then
-    ynh_legacy_permissions_delete_all
-    ynh_app_setting_delete --app=$app --key=is_public
-fi
-ynh_permission_update --permission=main --add=visitors --protected=true --show_tile=true
+ynh_systemd_action --service_name "uwsgi-app@$app.service" --line_match "WSGI app 0 \(mountpoint='[/[:alnum:]_-]*'\) ready in [[:digit:]]* seconds on interpreter" --log_path "/var/log/uwsgi/$app/$app.log"
 
+#=================================================
+# RELOAD NGINX
+#=================================================
+ynh_script_progression --message="Reloading NGINX web server..."
 
-ynh_script_progression --message="Restarting $app services..." --weight=3
-ynh_systemd_action --service_name "uwsgi-app@$app.service" \
-    --line_match "WSGI app 0 \(mountpoint='[/[:alnum:]_-]*'\) ready in [[:digit:]]* seconds on interpreter" --log_path "/var/log/uwsgi/$app/$app.log"
+ynh_systemd_action --service_name=nginx --action=reload
 
 #=================================================
 # END OF SCRIPT

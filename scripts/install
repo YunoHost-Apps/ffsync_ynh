@@ -6,13 +6,16 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-source ./experimental_helper.sh
-source ./_common.sh
+source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
 # MANAGE SCRIPT FAILURE
 #=================================================
+
+ynh_clean_setup () {
+	ynh_clean_check_starting
+}
 # Exit if an error occurs during the execution of the script
 ynh_abort_if_errors
 
@@ -22,8 +25,10 @@ ynh_abort_if_errors
 
 domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
-secret=$(ynh_string_random)
+
 app=$YNH_APP_INSTANCE_NAME
+
+secret=$(ynh_string_random)
 
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
@@ -39,6 +44,7 @@ ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
+ynh_script_progression --message="Storing installation settings..."
 
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
@@ -47,12 +53,19 @@ ynh_app_setting_set --app=$app --key=secret --value="$secret"
 #=================================================
 # STANDARD MODIFICATIONS
 #=================================================
-
-#=================================================
 # INSTALL DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Installing dependencies..." --weight=7
+
 ynh_install_app_dependencies $pkg_dependencies
+
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Configuring system user..."
+
+# Create a system user
+ynh_system_user_create --username=$app --home_dir="$final_path"
 
 #=================================================
 # CREATE A MYSQL DATABASE
@@ -67,8 +80,7 @@ ynh_mysql_setup_db --db_user=$db_user --db_name=$db_name
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Installing sources files..." --weight=10
-
+ynh_script_progression --message="Setting up source files..." --weight=10
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 install_sources
@@ -77,10 +89,15 @@ install_sources
 # TODO: try to include this as a patch if still needed
 # find ../sources/syncserver/page/sync_files/ -type f -exec sed -i -e "s@media\/img@$path_url\/media\/img@g" {} \;
 
+chmod 750 "$final_path"
+chmod -R o-rwx "$final_path"
+chown -R $app:www-data "$final_path"
+
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring nginx"
+ynh_script_progression --message="Configuring NGINX web server..."
+
 if [ "$path_url" == "/" ]
 then
 	# $finalnginxconf comes from ynh_add_nginx_config
@@ -89,36 +106,30 @@ then
 else
 	is_subpath=" "
 fi
-ynh_add_nginx_config 'is_subpath'
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Configuring system user..."
-# Create a system user
-ynh_system_user_create --username=$app --home_dir=$final_path
+ynh_add_nginx_config
 
 #=================================================
 # SPECIFIC SETUP
 #=================================================
-
-# create config file syncserver.ini
+# CONFIGURE APPLICATION
+#=================================================
 ynh_script_progression --message="Configuring application..."
-rm "$final_path/syncserver.ini"
+
+ynh_secure_remove --file="$final_path/syncserver.ini"
 ln -s "/etc/uwsgi/apps-available/$app.ini" "$final_path/syncserver.ini"
 
 # configure uwsgi
 ynh_add_uwsgi_service 'domain secret db_user db_pwd db_name'
 
 #=================================================
-# MODIFY A CONFIG FILE
+# ADD A CONFIGURATION
 #=================================================
+#ynh_script_progression --message="Adding a configuration file..."
+
 # TODO: fix this css patch
 # ynh_replace_string "media\/img@$path_url\/media\/img@g" $final_path/syncserver/page/sync_files/firefox_sync-bundle.css
 # ynh_replace_string "media\/img@$path_url\/media\/img@g" $final_path/syncserver/page/sync_files/responsive-bundle.css
 
-#=================================================
-# GENERIC FINALIZATION
 #=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
@@ -128,22 +139,29 @@ ynh_script_progression --message="Protecting directory"
 set_permissions
 
 #=================================================
+# GENERIC FINALIZATION
+#=================================================
+# START SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Starting a systemd service..." --weight=3
+
+# Start a systemd service
+ynh_systemd_action --service_name "uwsgi-app@$app.service" --line_match "WSGI app 0 \(mountpoint='[/[:alnum:]_-]*'\) ready in [[:digit:]]* seconds on interpreter" --log_path "/var/log/uwsgi/$app/$app.log"
+
+#=================================================
 # SETUP SSOWAT
 #=================================================
 ynh_script_progression --message="Configuring permissions"
-# accessible by everyone (authentification is done by firefox accounts)
 
+# Everyone can access the app. (authentification is done by firefox accounts)
 ynh_permission_update --permission=main --add=visitors --protected=true --show_tile=true
 
 #=================================================
-# RELOAD Services
+# RELOAD NGINX
 #=================================================
-ynh_script_progression --message="Restart services..."
-ynh_systemd_action --service_name=nginx --action=reload
+ynh_script_progression --message="Reloading NGINX web server..."
 
-ynh_script_progression --message="Starting $app services..." --weight=3
-ynh_systemd_action --service_name "uwsgi-app@$app.service" \
-    --line_match "WSGI app 0 \(mountpoint='[/[:alnum:]_-]*'\) ready in [[:digit:]]* seconds on interpreter" --log_path "/var/log/uwsgi/$app/$app.log"
+ynh_systemd_action --service_name=nginx --action=reload
 
 #=================================================
 # END OF SCRIPT
