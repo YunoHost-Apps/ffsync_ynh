@@ -79,7 +79,7 @@ NotifyAccess=all
 WantedBy=multi-user.target
 EOF
 
-    systemctl daemon-reload
+    systemctl daemon-reload --quiet
 }
 
 # Create a dedicated uwsgi ini file to use with generic uwsgi service
@@ -153,7 +153,7 @@ ynh_add_uwsgi_service () {
         mkdir /etc/systemd/system/uwsgi-app@$app.service.d && \
         cp ../conf/uwsgi-app@override.service /etc/systemd/system/uwsgi-app@$app.service.d/override.conf
 
-    systemctl daemon-reload
+    systemctl daemon-reload --quiet
     systemctl enable "uwsgi-app@$app.service" --quiet
 
     # Add as a service
@@ -167,7 +167,7 @@ ynh_remove_uwsgi_service () {
     local finaluwsgiini="/etc/uwsgi/apps-available/$app.ini"
     if [ -e "$finaluwsgiini" ]; then
         yunohost service remove "uwsgi-app@$app"
-        systemctl stop "uwsgi-app@$app.service"
+        systemctl stop "uwsgi-app@$app.service" --quiet
         systemctl disable "uwsgi-app@$app.service" --quiet
 
         ynh_secure_remove --file="$finaluwsgiini"
