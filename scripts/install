@@ -154,7 +154,7 @@ ynh_systemd_action --service_name "uwsgi-app@$app.service" --line_match "WSGI ap
 ynh_script_progression --message="Configuring permissions"
 
 # Everyone can access the app. (authentification is done by firefox accounts)
-ynh_permission_update --permission=main --add=visitors --protected=true --show_tile=true
+ynh_permission_update --permission="main" --add="visitors" --protected=true --show_tile=true
 
 #=================================================
 # RELOAD NGINX

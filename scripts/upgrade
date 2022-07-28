@@ -95,7 +95,7 @@ then
     ynh_legacy_permissions_delete_all
     ynh_app_setting_delete --app=$app --key=is_public
 fi
-ynh_permission_update --permission=main --add=visitors --protected=true --show_tile=true
+ynh_permission_update --permission="main" --add="visitors" --protected=true --show_tile=true
 
 #=================================================
 # CREATE DEDICATED USER
