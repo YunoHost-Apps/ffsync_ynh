@@ -1,3 +1,5 @@
+> :warning: **Firefox Sync Server n'est plus maintenue par Mozilla. Le packaging de l'app est arrêté et l'installation déconseillée.**
+
 # Serveur de synchronisation de Firefox pour YunoHost
 
 [![Integration level](https://dash.yunohost.org/integration/ffsync.svg)](https://dash.yunohost.org/appci/app/ffsync) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.maintain.svg)  

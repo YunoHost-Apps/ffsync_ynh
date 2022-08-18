@@ -1,3 +1,5 @@
+> :warning: **Mozilla’s Firefox Sync Server is not maintained anymore upstream. Packaging is discontinued and installation is discouraged.**
+
 # Mozilla’s Sync Server for YunoHost
 
 [![Integration level](https://dash.yunohost.org/integration/ffsync.svg)](https://dash.yunohost.org/appci/app/ffsync) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.maintain.svg)  

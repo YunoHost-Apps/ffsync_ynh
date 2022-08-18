@@ -30,6 +30,13 @@
     "arguments": {
         "install" : [
             {
+                "name": "warning",
+                "type": "display_text",
+                "ask": {
+                    "en": "Firefox Sync Server is not maintained anymore by Mozilla. Installing is strongly discouraged.",
+                    "fr": "Firefox Sync Server n'est plus maintenue par Mozilla. L'installation est fortement déconseillée."
+                }
+            },            {
                 "name": "domain",
                 "type": "domain",
                 "ask": {
