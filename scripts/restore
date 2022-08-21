@@ -30,8 +30,6 @@ db_user=$db_name
 #=================================================
 # CHECK IF THE APP CAN BE RESTORED
 #=================================================
-ynh_webpath_available --domain=$domain --path_url=$path_url \
-	|| ynh_die --message="Path not available: ${domain}${path_url}"
 test ! -d $final_path \
 	|| ynh_die --message="There is already a directory: $final_path "
 
@@ -82,7 +80,8 @@ ynh_mysql_connect_as --user=$db_user --password=$db_pwd --database=$db_name < ./
 
 ynh_script_progression --message="Reloading services..." --weight=3
 systemctl daemon-reload
-systemctl enable $app.service
+systemctl enable --quiet $app.service
+yunohost service add "$app"
 
 #=================================================
 # GENERIC FINALIZATION

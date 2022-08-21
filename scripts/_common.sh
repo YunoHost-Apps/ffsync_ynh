@@ -14,18 +14,7 @@ pkg_dependencies="pypy pypy-dev python3-virtualenv build-essential libssl-dev li
 #=================================================
 
 call_pip() {
-    # Sometime we get a segfault error while we invoke pip
-    # As we don't have a really clean way to fix this really bad error we just try many time utils it works
-    i=0
-    result_ok=false
-    while [ $i -lt 5 ] && ! $result_ok; do
-        ynh_exec_warn_less pip $@ && result_ok=true
-        i=$((i+1))
-    done
-    if ! $result_ok; then
-        echo "Error on build package"
-        false
-    fi
+    ynh_exec_warn_less pip $@
 }
 
 install_sources() {

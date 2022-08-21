@@ -10,11 +10,9 @@
 		setup_private=0
 		setup_public=1
 		upgrade=1
-		upgrade=1    from_commit=028501b35335139cff4fc41477a9dbc969657576
 		backup_restore=1
 		multi_instance=1
 		port_already_use=0
 		change_url=0
 ;;; Upgrade options
-    ; commit=028501b35335139cff4fc41477a9dbc969657576
         name=Before migration to pypy

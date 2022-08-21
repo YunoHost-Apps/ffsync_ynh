@@ -96,7 +96,7 @@ ynh_script_progression --message="Checking backware compatibility..." --weight=1
 # Detect old installation with uwsgi
 if [ -e /etc/uwsgi/apps-available/$app.ini ]; then
 	systemctl stop uwsgi-app@$app.service
-	systemctl disable uwsgi-app@$app.service
+	systemctl disable --quiet uwsgi-app@$app.service
 	yunohost service remove "uwsgi-app@$app"
 	ynh_secure_remove --file=/etc/uwsgi/apps-available/$app.ini
 	ynh_secure_remove --file=/etc/systemd/system/uwsgi-app@$app.service.d
