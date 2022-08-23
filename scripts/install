@@ -6,7 +6,6 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-source ./experimental_helper.sh
 source ./_common.sh
 source /usr/share/yunohost/helpers
 
@@ -36,6 +35,9 @@ test ! -e "$final_path" || ynh_die --message="This path already contains a folde
 # Register (book) web path
 ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
 
+# Find available ports
+port=$(ynh_find_port --port 6000)
+
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
@@ -43,6 +45,7 @@ ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
 ynh_app_setting_set --app=$app --key=secret --value="$secret"
+ynh_app_setting_set --app $app --key web_port --value $port
 
 #=================================================
 # STANDARD MODIFICATIONS
@@ -104,11 +107,12 @@ ynh_system_user_create --username=$app --home_dir=$final_path
 
 # create config file syncserver.ini
 ynh_script_progression --message="Configuring application..."
-rm "$final_path/syncserver.ini"
-ln -s "/etc/uwsgi/apps-available/$app.ini" "$final_path/syncserver.ini"
+ynh_add_config --template="syncserver.ini" --destination="$final_path/syncserver.ini"
 
-# configure uwsgi
-ynh_add_uwsgi_service 'domain secret db_user db_pwd db_name'
+# Configure init script
+ynh_script_progression --message="Configuring a systemd service..." --weight=2
+ynh_add_systemd_config
+yunohost service add "$app"
 
 #=================================================
 # MODIFY A CONFIG FILE
@@ -142,8 +146,8 @@ ynh_script_progression --message="Restart services..."
 ynh_systemd_action --service_name=nginx --action=reload
 
 ynh_script_progression --message="Starting $app services..." --weight=3
-ynh_systemd_action --service_name "uwsgi-app@$app.service" \
-    --line_match "WSGI app 0 \(mountpoint='[/[:alnum:]_-]*'\) ready in [[:digit:]]* seconds on interpreter" --log_path "/var/log/uwsgi/$app/$app.log"
+ynh_systemd_action --service_name "$app.service" \
+    --line_match "Booting worker with pid" --log_path "systemd" -t 20
 
 #=================================================
 # END OF SCRIPT

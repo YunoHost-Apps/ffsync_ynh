@@ -5,7 +5,6 @@
 #=================================================
 # IMPORT GENERIC HELPERS
 #=================================================
-source ../settings/scripts/experimental_helper.sh
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
@@ -31,8 +30,6 @@ db_user=$db_name
 #=================================================
 # CHECK IF THE APP CAN BE RESTORED
 #=================================================
-ynh_webpath_available --domain=$domain --path_url=$path_url \
-	|| ynh_die --message="Path not available: ${domain}${path_url}"
 test ! -d $final_path \
 	|| ynh_die --message="There is already a directory: $final_path "
 
@@ -82,8 +79,9 @@ ynh_mysql_connect_as --user=$db_user --password=$db_pwd --database=$db_name < ./
 #=================================================
 
 ynh_script_progression --message="Reloading services..." --weight=3
-
-ynh_restore_uwsgi_service
+systemctl daemon-reload
+systemctl enable --quiet $app.service
+yunohost service add "$app"
 
 #=================================================
 # GENERIC FINALIZATION
@@ -92,8 +90,8 @@ ynh_restore_uwsgi_service
 #=================================================
 
 ynh_script_progression --message="Starting pgadmin services..." --weight=3
-ynh_systemd_action --service_name "uwsgi-app@$app.service" \
-    --line_match "WSGI app 0 \(mountpoint='[/[:alnum:]_-]*'\) ready in [[:digit:]]* seconds on interpreter" --log_path "/var/log/uwsgi/$app/$app.log"
-ynh_systemd_action --service_name=nginx --action=reload
+ynh_systemd_action --service_name "$app.service" \
+    --line_match "Booting worker with pid" --log_path "systemd"
+ynh_systemd_action --service_name=nginx --action=reload -t 20
 
 ynh_script_progression --message="Restoration completed for $app" --last

@@ -6,7 +6,6 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-source ./experimental_helper.sh
 source ./_common.sh
 source /usr/share/yunohost/helpers
 
@@ -40,8 +39,10 @@ fi
 #=================================================
 ynh_script_progression --message="Removing configuration..."
 
-# Remove the dedicated systemd config
-ynh_remove_uwsgi_service
+# Remove init script
+ynh_script_progression --message="Removing systemd units..."
+ynh_remove_systemd_config
+yunohost service remove "$app"
 
 #=================================================
 # REMOVE THE MYSQL DATABASE
