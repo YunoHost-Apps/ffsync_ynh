@@ -49,6 +49,12 @@ if [ -z "$final_path" ]; then
 	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 fi
 
+if [ -z "${port:-}" ]; then
+	# Find available ports
+	port=$(ynh_find_port --port 6000)
+	ynh_app_setting_set --app $app --key web_port --value $port
+fi
+
 # If path_url doesn't exist, create it
 if [ -z "$path_url" ]; then
 	path_url=$(ynh_app_setting_get --app=$app --key=path)
