@@ -1,10 +1,10 @@
 # Mozilla’s Sync Server for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/ffsync.svg)](https://dash.yunohost.org/appci/app/ffsync) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.maintain.svg)  
+[![Integration level](https://dash.yunohost.org/integration/ffsync.svg)](https://dash.yunohost.org/appci/app/ffsync) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/ffsync.maintain.svg)
 [![Install ffsync with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=ffsync)
 
 *[Lire ce readme en français.](./README_fr.md)*
-> *This package allow you to install ffsync quickly and simply on a YunoHost server.  
+> *This package allow you to install ffsync quickly and simply on a YunoHost server.
 If you don't have YunoHost, please see [here](https://yunohost.org/#/install) to know how to install and enjoy it.*
 
 ## Overview
@@ -23,11 +23,6 @@ By default, a server set up will defer authentication to the Mozilla-hosted acco
 ## Configuration
 
 Once installed, reaching `http://domain.tld/path` should show a page explaining how to configure it.
-
-#### Supported architectures
-
-* x86-64 - [![Build Status](https://ci-apps.yunohost.org/ci/logs/ffsync%20%28Apps%29.svg)](https://ci-apps.yunohost.org/ci/apps/ffsync/)
-* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/ffsync%20%28Apps%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/ffsync/)
 
 ## Links
 

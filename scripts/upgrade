@@ -6,7 +6,6 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-source ./experimental_helper.sh
 source ./_common.sh
 source /usr/share/yunohost/helpers
 
@@ -23,6 +22,7 @@ final_path=$(ynh_app_setting_get --app $app --key=final_path)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 secret=$(ynh_app_setting_get --app $app --key=secret)
 db_pwd=$(ynh_app_setting_get --app=$app --key mysqlpwd)
+port=$(ynh_app_setting_get --app=$app --key web_port)
 db_user=$app
 
 #=================================================
@@ -47,6 +47,12 @@ fi
 if [ -z "$final_path" ]; then
 	final_path=/opt/yunohost/$app
 	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
+fi
+
+if [ -z "${port:-}" ]; then
+	# Find available ports
+	port=$(ynh_find_port --port 6000)
+	ynh_app_setting_set --app $app --key web_port --value $port
 fi
 
 # If path_url doesn't exist, create it
@@ -89,6 +95,23 @@ ynh_clean_setup () {
 ynh_abort_if_errors
 
 #=================================================
+# ENSURE DOWNWARD COMPATIBILITY
+#=================================================
+ynh_script_progression --message="Checking backware compatibility..." --weight=10
+
+# Detect old installation with uwsgi
+if [ -e /etc/uwsgi/apps-available/$app.ini ]; then
+	systemctl stop uwsgi-app@$app.service
+	systemctl disable --quiet uwsgi-app@$app.service
+	yunohost service remove "uwsgi-app@$app"
+	ynh_secure_remove --file=/etc/uwsgi/apps-available/$app.ini
+	ynh_secure_remove --file=/etc/systemd/system/uwsgi-app@$app.service.d
+	ynh_secure_remove --file=$final_path
+else
+	systemctl stop $app.service
+fi
+
+#=================================================
 # STANDARD UPGRADE STEPS
 #=================================================
 
@@ -105,7 +128,13 @@ ynh_install_app_dependencies $pkg_dependencies
 
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_script_progression --message="Upgrading source files..." --weight=6
-install_sources
+if [ -e $final_path/syncserver.ini ]; then
+	config_backup="$(cat $final_path/syncserver.ini)"
+	install_sources
+	echo "$config_backup" > $final_path/syncserver.ini
+else
+	install_sources
+fi
 
 #=================================================
 # NGINX CONFIGURATION
@@ -134,11 +163,12 @@ ynh_system_user_create --username="$app"
 ynh_script_progression --message="Configuring application..."
 
 # create config file syncserver.ini
-rm "$final_path/syncserver.ini"
-ln -s "/etc/uwsgi/apps-available/$app.ini" "$final_path/syncserver.ini"
+ynh_script_progression --message="Configuring application..."
+ynh_add_config --template="syncserver.ini" --destination="$final_path/syncserver.ini"
 
-# configure uwsgi
-ynh_add_uwsgi_service 'domain secret db_user db_pwd db_name'
+# Configure init script
+ynh_script_progression --message="Configuring a systemd service..." --weight=2
+ynh_add_systemd_config
 
 # Upgrade database table
 ynh_mysql_execute_as_root --sql='ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `keys_changed_at` BIGINT NULL AFTER `replaced_at`;' --database=$db_name
@@ -166,10 +196,11 @@ then
 fi
 ynh_permission_update --permission=main --add=visitors --protected=true --show_tile=true
 
+yunohost service add "$app"
 
 ynh_script_progression --message="Restarting $app services..." --weight=3
-ynh_systemd_action --service_name "uwsgi-app@$app.service" \
-    --line_match "WSGI app 0 \(mountpoint='[/[:alnum:]_-]*'\) ready in [[:digit:]]* seconds on interpreter" --log_path "/var/log/uwsgi/$app/$app.log"
+ynh_systemd_action --service_name "$app.service" \
+    --line_match "Booting worker with pid" --log_path "systemd" -t 20
 
 #=================================================
 # END OF SCRIPT
