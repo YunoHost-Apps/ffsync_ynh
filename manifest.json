@@ -21,7 +21,7 @@
         "email": "jean-baptiste@holcroft.fr"
     }],
     "requirements": {
-        "yunohost": ">= 4.1"
+        "yunohost": ">= 4.1.2"
 	},
     "multi_instance": true,
 	"services": [
@@ -32,19 +32,11 @@
             {
                 "name": "domain",
                 "type": "domain",
-                "ask": {
-                    "en": "Choose a domain for Firefox-Sync Server",
-                    "fr": "Choisissez un domaine pour Firefox-Sync"
-                },
                 "example": "domain.org"
             },
             {
                 "name": "path",
                 "type": "path",
-                "ask": {
-                    "en": "Choose a path for Firefox-Sync Server",
-                    "fr": "Choisissez un chemin pour Firefox-Sync"
-                },
                 "example": "/ffsync",
                 "default": "/ffsync"
             }
