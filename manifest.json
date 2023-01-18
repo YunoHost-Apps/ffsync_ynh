@@ -6,7 +6,7 @@
         "en": "Mozilla’s Sync-Server to host your Firefox account data",
         "fr": "Le serveur de synchronisation de Mozilla, pour héberger vos données Firefox"
     },
-    "version": "1.9.1~ynh3",
+    "version": "1.9.1~ynh4",
     "url": "https://github.com/mozilla-services/syncserver",
     "license": "MPL-2.0",
     "maintainer": {
