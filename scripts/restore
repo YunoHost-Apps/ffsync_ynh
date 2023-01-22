@@ -30,21 +30,23 @@ db_user=$db_name
 #=================================================
 # CHECK IF THE APP CAN BE RESTORED
 #=================================================
+
 test ! -d $final_path \
 	|| ynh_die --message="There is already a directory: $final_path "
 
 #=================================================
 # STANDARD RESTORATION STEPS
 #=================================================
+ynh_script_progression --message="Restoring files..." --weight=5
 
 # Restore all config and data
-ynh_script_progression --message="Restoring files..." --weight=5
 ynh_restore
 
 #=================================================
 # RECREATE THE DEDICATED USER
 #=================================================
 ynh_script_progression --message="Recreating the dedicated system user..."
+
 ynh_system_user_create --username="$app"
 usermod --append --groups www-data "$app"
 
@@ -77,8 +79,8 @@ ynh_mysql_connect_as --user=$db_user --password=$db_pwd --database=$db_name < ./
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
-
 ynh_script_progression --message="Reloading services..." --weight=3
+
 systemctl daemon-reload
 systemctl enable --quiet $app.service
 yunohost service add "$app"
@@ -88,8 +90,8 @@ yunohost service add "$app"
 #=================================================
 # RELOAD NGINX AND UWSGI
 #=================================================
-
 ynh_script_progression --message="Starting pgadmin services..." --weight=3
+
 ynh_systemd_action --service_name "$app.service" \
     --line_match "Booting worker with pid" --log_path "systemd"
 ynh_systemd_action --service_name=nginx --action=reload -t 20
