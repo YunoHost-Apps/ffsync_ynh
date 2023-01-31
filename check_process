@@ -1,7 +1,7 @@
 ;; Test name
 	; Manifest
-		domain="domain.tld"	(DOMAIN)
-		path="/path"	(PATH)
+		domain="domain.tld"
+		path="/path"
 	; Checks
 		pkg_linter=1
 		setup_sub_dir=1

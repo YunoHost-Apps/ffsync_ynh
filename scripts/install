@@ -50,11 +50,10 @@ ynh_app_setting_set --app $app --key web_port --value $port
 #=================================================
 # STANDARD MODIFICATIONS
 #=================================================
-
-#=================================================
 # INSTALL DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Installing dependencies..." --weight=7
+
 ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
@@ -72,7 +71,6 @@ ynh_mysql_setup_db --db_user=$db_user --db_name=$db_name
 #=================================================
 ynh_script_progression --message="Installing sources files..." --weight=10
 
-
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 install_sources
 
@@ -83,7 +81,8 @@ install_sources
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring nginx"
+ynh_script_progression --message="Configuring NGINX"
+
 if [ "$path_url" == "/" ]
 then
 	# $finalnginxconf comes from ynh_add_nginx_config
@@ -98,15 +97,16 @@ ynh_add_nginx_config 'is_subpath'
 # CREATE DEDICATED USER
 #=================================================
 ynh_script_progression --message="Configuring system user..."
+
 # Create a system user
 ynh_system_user_create --username=$app --home_dir=$final_path
 
 #=================================================
 # SPECIFIC SETUP
 #=================================================
+ynh_script_progression --message="Configuring application..."
 
 # create config file syncserver.ini
-ynh_script_progression --message="Configuring application..."
 ynh_add_config --template="syncserver.ini" --destination="$final_path/syncserver.ini"
 
 # Configure init script
@@ -135,14 +135,15 @@ set_permissions
 # SETUP SSOWAT
 #=================================================
 ynh_script_progression --message="Configuring permissions"
-# accessible by everyone (authentification is done by firefox accounts)
 
+# accessible by everyone (authentification is done by firefox accounts)
 ynh_permission_update --permission=main --add=visitors --protected=true --show_tile=true
 
 #=================================================
 # RELOAD Services
 #=================================================
 ynh_script_progression --message="Restart services..."
+
 ynh_systemd_action --service_name=nginx --action=reload
 
 ynh_script_progression --message="Starting $app services..." --weight=3
