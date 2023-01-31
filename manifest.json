@@ -6,7 +6,7 @@
         "en": "Mozilla’s Sync-Server to host your Firefox account data",
         "fr": "Serveur de synchronisation de Mozilla, pour héberger vos données Firefox"
     },
-    "version": "1.9.1~ynh3",
+    "version": "1.9.1~ynh4",
     "url": "https://github.com/mozilla-services/syncserver",
     "upstream": {
         "license": "MPL-2.0",
@@ -26,7 +26,7 @@
         "email": "jean-baptiste@holcroft.fr"
     }],
     "requirements": {
-        "yunohost": ">= 11.0.9"
+        "yunohost": ">= 11.0.11"
 	},
     "multi_instance": true,
 	"services": [
