@@ -6,6 +6,7 @@ It shall NOT be edited by hand.
 # Firefox Sync Server for YunoHost
 
 [![Integration level](https://dash.yunohost.org/integration/ffsync.svg)](https://dash.yunohost.org/appci/app/ffsync) ![Working status](https://ci-apps.yunohost.org/ci/badges/ffsync.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/ffsync.maintain.svg)
+
 [![Install Firefox Sync Server with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=ffsync)
 
 *[Lire ce readme en français.](./README_fr.md)*
@@ -54,7 +55,7 @@ D FxAccounts(...) fennec :: BaseResource :: HTTP GET https://sync-4-us-east-1.st
 
 * Official admin documentation: <https://mozilla-services.readthedocs.io/en/latest/howtos/run-sync-1.5.html>
 * Upstream app code repository: <https://github.com/mozilla-services/syncserver>
-* YunoHost documentation for this app: <https://yunohost.org/app_ffsync>
+* YunoHost Store: <https://apps.yunohost.org/app/ffsync>
 * Report a bug: <https://github.com/YunoHost-Apps/ffsync_ynh/issues>
 
 ## Developer info

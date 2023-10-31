@@ -6,6 +6,7 @@ It shall NOT be edited by hand.
 # Firefox Sync Server pour YunoHost
 
 [![Niveau d’intégration](https://dash.yunohost.org/integration/ffsync.svg)](https://dash.yunohost.org/appci/app/ffsync) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/ffsync.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/ffsync.maintain.svg)
+
 [![Installer Firefox Sync Server avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=ffsync)
 
 *[Read this readme in english.](./README.md)*
@@ -33,7 +34,7 @@ Une fois installé, la page `http://domain.tld/path` vous explique comment l'uti
 
 * Documentation officielle de l’admin : <https://mozilla-services.readthedocs.io/en/latest/howtos/run-sync-1.5.html>
 * Dépôt de code officiel de l’app : <https://github.com/mozilla-services/syncserver>
-* Documentation YunoHost pour cette app : <https://yunohost.org/app_ffsync>
+* YunoHost Store: <https://apps.yunohost.org/app/ffsync>
 * Signaler un bug : <https://github.com/YunoHost-Apps/ffsync_ynh/issues>
 
 ## Informations pour les développeurs
