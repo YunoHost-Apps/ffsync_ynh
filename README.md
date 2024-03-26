@@ -23,7 +23,7 @@ By default, a server set up will defer authentication to the Mozilla-hosted acco
 ⚠️ This app is **deprecated and replaced** by [syncstorage-rs](https://apps.yunohost.org/app/syncserver-rs).
 
 
-**Shipped version:** 1.9.1~ynh5
+**Shipped version:** 1.9.1~ynh6
 ## Disclaimers / important information
 
 ## Configuration

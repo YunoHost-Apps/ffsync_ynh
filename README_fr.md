@@ -23,7 +23,7 @@ Par défaut, le serveur reporte l'authentification aux serveurs de comptes de Mo
 ⚠️ Cette app est **obsolète et remplacée** par [syncstorage-rs](https://apps.yunohost.org/app/syncserver-rs).
 
 
-**Version incluse :** 1.9.1~ynh5
+**Version incluse :** 1.9.1~ynh6
 ## Avertissements / informations importantes
 
 ## Configuration
