@@ -185,7 +185,7 @@ help support Mozilla.
         <li><a href="https://www.mozilla.org/fr/firefox/interest-dashboard/" data-link-type="nav" data-link-name="Side Menu: Interest Dashboard">Tableau de bord des centres d’intérêt</a></li>
         <li><a rel="external" href="https://support.mozilla.org/kb/private-browsing-browse-web-without-saving-info" data-link-type="nav" data-link-name="Side Menu: Private Browsing">Navigation privée</a></li>
         <li><a rel="external" href="https://addons.mozilla.org/" data-link-type="nav" data-link-name="Side Menu: Add-ons">Modules</a></li>
-        <li><a rel="external" href="https://github.com/abeudin/ffsync_ynh/issues" data-link-type="nav" data-link-name="Side Menu: Need help?">Need Help&nbsp;?</a></li>
+        <li><a rel="external" href="https://github.com/YunoHost-Apps/ffsync_ynh/issues" data-link-type="nav" data-link-name="Side Menu: Need help?">Need Help&nbsp;?</a></li>
       </ul>
 
       <ul class="adjunctnav">
@@ -287,7 +287,7 @@ help support Mozilla.
                             <div class="show-fx-31-signed-in">
 
                                 <p class="button-footer">
-                                    <a href="https://github.com/abeudin/ffsync_ynh/issues" class="ga-link" data-interaction="outbound link click">
+                                    <a href="https://github.com/YunoHost-Apps/ffsync_ynh/issues" class="ga-link" data-interaction="outbound link click">
                                         Need help?
                                     </a>
                                 </p>
